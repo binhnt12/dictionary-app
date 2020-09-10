@@ -4,9 +4,9 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { createStore, applyMiddleware } from "redux";
 import { Provider } from "react-redux";
 import thunk from "redux-thunk";
-import rootReducer from "./reducers";
+import rootReducer from "./src/reducers";
 
-import BottomTabNavigator from "./navigation/BottomTabNavigator";
+import BottomTabNavigator from "./src/navigation/BottomTabNavigator";
 
 export default function App() {
   const Stack = createStackNavigator();

@@ -1,43 +1,58 @@
 import React, { useState } from "react";
-import {
-  Text,
-  TextInput,
-  View,
-  Button,
-  ScrollView,
-  StyleSheet,
-} from "react-native";
-import { useSelector, useDispatch } from "react-redux";
-import { getWord } from "../actions/search";
+import { Text, View, StyleSheet, Dimensions } from "react-native";
+import CheckBox from "@react-native-community/checkbox";
+import { useDispatch, useSelector } from "react-redux";
 
-const Search = () => {
-  const [text, onChangeText] = useState("");
+import { addToListWord, removeFromListWord } from "../actions/user";
 
-  const data = useSelector(state => state.search.data) || {
-    notFound: null,
-    message: "",
-    idx: null,
-    word: "",
-    detail: {
-      splitTwo: [],
-    },
-  };
-  // console.log(JSON.stringify(data.detail.splitTwo, null, 2));
+const { width } = Dimensions.get("window");
+
+const Search = props => {
+  const { init, word, listData } = props;
+  let { data } = props;
+
+  const [isSelected, setSelection] = useState(Boolean(init));
+
+  const userId = useSelector(state => state.user.userId);
+  // console.log(userId);
   const dispatch = useDispatch();
 
-  const handleSearch = value => {
-    getWord(dispatch, value);
+  const handleSelection = value => {
+    setSelection(value);
+    if (value) {
+      data = { ...data, userId: userId };
+      addToListWord(dispatch, data);
+    } else {
+      removeFromListWord(dispatch, data.word);
+    }
   };
 
-  return (
-    <ScrollView>
-      <TextInput onChangeText={value => onChangeText(value)} value={text} />
-      <Button onPress={() => handleSearch(text)} title="Search" />
-      {data.notFound ? (
-        <Text style={styles.notFound}>{data.message}</Text>
+  if (init && listData.length > 0) {
+    data = listData.filter(d => d.data.word === word)[0];
+    data = data && data.data;
+  }
+  if (init) {
+    console.log("data:", data);
+  }
+
+  return data ? (
+    <View style={styles.slide}>
+      {data.notFound || !data.detail ? (
+        <Text style={styles.notFound}>{data.message || "not data"}</Text>
       ) : (
         <View>
-          <Text style={styles.spelling}>{data.detail.splitTwo[0]}</Text>
+          <View style={styles.checkboxContainer}>
+            <CheckBox
+              value={isSelected}
+              onValueChange={handleSelection}
+              style={styles.checkbox}
+            />
+            <Text style={styles.label}>Thêm vào list từ vựng</Text>
+          </View>
+          <Text style={styles.word}>{data.word}</Text>
+          {data.detail.splitTwo[0] !== "/" && (
+            <Text style={styles.spelling}>{data.detail.splitTwo[0]}</Text>
+          )}
           <Text>
             {data.detail.splitTwo.map(splitTwoLv1 => {
               return (
@@ -49,11 +64,13 @@ const Search = () => {
                         splitTwoLv2.indexOf("*"),
                         splitTwoLv2.indexOf("\n"),
                       )
-                      .replace("*  ", "");
+                      .replace(/(\* {2})|(\* )/, "");
+
                     const content = splitTwoLv2
                       .slice(splitTwoLv2.indexOf("\n"))
                       .replace(/\n-/g, "\n\u2023")
                       .replace(/\n=/g, "\n\u25e6");
+
                     return [
                       <Text key={i} style={styles.phrase}>
                         {phrase}
@@ -62,6 +79,7 @@ const Search = () => {
                     ];
                   } else if (i === 1) {
                     splitTwoLv2 = splitTwoLv2.split("\n!");
+
                     return [
                       <Text key={`idioms-title`} style={styles.idioms}>
                         {"\n\t"}Idioms
@@ -85,11 +103,26 @@ const Search = () => {
           </Text>
         </View>
       )}
-    </ScrollView>
-  );
+    </View>
+  ) : null;
 };
 
 const styles = StyleSheet.create({
+  slide: {
+    paddingHorizontal: 20,
+    paddingBottom: 10,
+    paddingTop: 30,
+    flexBasis: "100%",
+    flex: 1,
+    maxWidth: width - 20,
+    display: "flex",
+    flexDirection: "row",
+  },
+  slideText: {
+    width: "100%",
+    textAlign: "left",
+    fontSize: 20,
+  },
   spelling: {
     textAlign: "center",
   },
@@ -106,6 +139,22 @@ const styles = StyleSheet.create({
   },
   notFound: {
     color: "red",
+  },
+  word: {
+    textAlign: "center",
+  },
+  multipleWord: {
+    textDecorationLine: "underline",
+  },
+  checkboxContainer: {
+    flexDirection: "row",
+    // marginBottom: 20,
+  },
+  checkbox: {
+    alignSelf: "center",
+  },
+  label: {
+    margin: 8,
   },
 });
 
