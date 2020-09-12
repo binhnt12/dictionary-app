@@ -4,7 +4,7 @@ import { ScrollView } from "react-native-gesture-handler";
 import Search from "./Search";
 
 export const Carousel = (props: any) => {
-  const { items, listData } = props;
+  const { items } = props;
   const itemsPerInterval =
     props.itemsPerInterval === undefined ? 1 : props.itemsPerInterval;
 
@@ -65,7 +65,7 @@ export const Carousel = (props: any) => {
         decelerationRate="fast"
       >
         {items.map((item: any, index: number) => {
-          return <Search key={index} word={item} listData={listData} init />;
+          return <Search key={index} data={item} isSelected />;
         })}
       </ScrollView>
       <View style={styles.bullets}>{bullets}</View>

@@ -8,32 +8,29 @@ import { addToListWord, removeFromListWord } from "../actions/user";
 const { width } = Dimensions.get("window");
 
 const Search = props => {
-  const { init, word, listData } = props;
-  let { data } = props;
+  const { isSelected, data } = props;
+  // let { data } = props;
 
-  const [isSelected, setSelection] = useState(Boolean(init));
+  const [isSelectedState, setSelectionState] = useState(isSelected);
 
-  const userId = useSelector(state => state.user.userId);
-  // console.log(userId);
   const dispatch = useDispatch();
 
   const handleSelection = value => {
-    setSelection(value);
+    setSelectionState(value);
     if (value) {
-      data = { ...data, userId: userId };
       addToListWord(dispatch, data);
     } else {
       removeFromListWord(dispatch, data.word);
     }
   };
 
-  if (init && listData.length > 0) {
-    data = listData.filter(d => d.data.word === word)[0];
-    data = data && data.data;
-  }
-  if (init) {
-    console.log("data:", data);
-  }
+  // if (init && listData.length > 0) {
+  //   data = listData.filter(d => d.data.word === word)[0];
+  //   data = data && data.data;
+  // }
+  // if (init) {
+  //   console.log("data:", data);
+  // }
 
   return data ? (
     <View style={styles.slide}>
@@ -43,7 +40,7 @@ const Search = props => {
         <View>
           <View style={styles.checkboxContainer}>
             <CheckBox
-              value={isSelected}
+              value={isSelectedState}
               onValueChange={handleSelection}
               style={styles.checkbox}
             />

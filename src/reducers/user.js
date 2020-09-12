@@ -20,7 +20,6 @@ const defaultStates = {
   token: null,
   userId: null,
   error: null,
-  words: ["make", "line", "active", "made", "in"],
   listWord: [],
 };
 
@@ -78,7 +77,7 @@ export default function user(state = defaultStates, action) {
       return { ...state, token };
 
     case GET_LIST_WORD:
-      return { ...state, listWord: [...state.listWord, action.payload] };
+      return { ...state, listWord: action.payload.listWord };
     case CLEAR_LIST_WORD:
       return { ...state, listWord: [] };
 
@@ -86,16 +85,15 @@ export default function user(state = defaultStates, action) {
       console.log("ADD_TO_LIST_WORD:", action.payload);
       return {
         ...state,
-        listWord: [...state.listWord, { data: action.payload }],
-        words: [...state.words, action.payload.word],
+        listWord: [...state.listWord, action.payload],
       };
     case REMOVE_FROM_LIST_WORD:
       console.log("REMOVE_FROM_LIST_WORD:", state.listWord);
-      const newListWord = state.listWord.filter(
-        o => o.data.word !== action.payload,
-      );
-      const newWords = state.words.filter(e => e !== action.payload);
-      return { ...state, listWord: newListWord, words: newWords };
+      const newListWord = state.listWord.filter(o => o.word !== action.payload);
+      return {
+        ...state,
+        listWord: newListWord,
+      };
 
     default:
       return state;

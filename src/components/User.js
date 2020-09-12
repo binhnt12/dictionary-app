@@ -11,14 +11,12 @@ import { getListWord, clearListWord } from "../actions/user";
 const User = () => {
   const [key, setKey] = useState(0);
   const username = useSelector(state => state.user.username);
-  const listData = useSelector(state => state.user.listWord);
-  const words = useSelector(state => state.user.words);
+  const listWord = useSelector(state => state.user.listWord);
+  // const words = useSelector(state => state.user.words);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    words.map(word => {
-      getListWord(dispatch, word);
-    });
+    getListWord(dispatch);
     return () => {
       clearListWord(dispatch);
     };
@@ -28,7 +26,7 @@ const User = () => {
   useEffect(() => {
     setKey(key === 0 ? 1 : 0);
     // eslint-disable-next-line
-  }, [words]);
+  }, [listWord]);
 
   const handleLogout = () => {
     logout(dispatch);
@@ -39,7 +37,7 @@ const User = () => {
       <Text>{username}</Text>
       <Button title="Logout" onPress={() => handleLogout()} />
       <View style={styles.container}>
-        {words && <Carousel key={key} items={words} listData={listData} />}
+        {listWord && <Carousel key={key} items={listWord} />}
       </View>
     </ScrollView>
   );

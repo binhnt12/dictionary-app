@@ -9,10 +9,15 @@ const Search = () => {
   const debounceRef = useRef(null);
 
   const data = useSelector(state => state.search.data);
+  const listWord = useSelector(state => state.user.listWord);
+  const showSearchComponent = useRef(false);
   // console.log(JSON.stringify(data.words, null, 2));
   const dispatch = useDispatch();
 
+  const isSelected = listWord.findIndex(e => e.word === data.word) !== -1;
+
   const onSearcch = value => {
+    showSearchComponent.current = false;
     onChangeText(value);
     if (debounceRef.current) {
       clearTimeout(debounceRef.current);
@@ -24,6 +29,7 @@ const Search = () => {
   };
 
   const handleSearch = value => {
+    showSearchComponent.current = true;
     getSingleWord(dispatch, value);
   };
 
@@ -43,7 +49,9 @@ const Search = () => {
           </Text>
         ))}
 
-      {data && <SearchComponent data={data} />}
+      {data && showSearchComponent.current && (
+        <SearchComponent data={data} isSelected={isSelected} />
+      )}
     </ScrollView>
   );
 };
