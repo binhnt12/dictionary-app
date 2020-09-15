@@ -1,19 +1,22 @@
 import React, { useState } from "react";
 import { Text, View, StyleSheet, Dimensions } from "react-native";
 import CheckBox from "@react-native-community/checkbox";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 
 import { addToListWord, removeFromListWord } from "../actions/user";
 
 const { width } = Dimensions.get("window");
 
 const Search = props => {
-  const { isSelected, data } = props;
-  // let { data } = props;
+  const { isSelected, data, selector } = props;
 
   const [isSelectedState, setSelectionState] = useState(isSelected);
 
   const dispatch = useDispatch();
+
+  if (!data) {
+    return null;
+  }
 
   const handleSelection = value => {
     setSelectionState(value);
@@ -24,34 +27,48 @@ const Search = props => {
     }
   };
 
-  // if (init && listData.length > 0) {
-  //   data = listData.filter(d => d.data.word === word)[0];
-  //   data = data && data.data;
-  // }
-  // if (init) {
-  //   console.log("data:", data);
-  // }
+  const removedTags = data.detail.slice(
+    data.detail.indexOf("@"),
+    data.detail.indexOf("</Q>"),
+  );
+  const text = removedTags
+    .replace(/<br \/>/g, "\n")
+    .replace(/\+/g, ":")
+    .replace(/&amp;/g, "&");
+  // tách thành đoạn dựa trên kí tự * và lấy cả *, split("*") nhưng lấy cả *
+  const splitOne = text.split(/(?=\*)/);
+  let splitTwo = [];
+  splitTwo[0] =
+    splitOne[0].slice(
+      splitOne[0].indexOf("/"),
+      splitOne[0].indexOf("/", splitOne[0].indexOf("/") + 1),
+    ) + "/";
+  for (let i = 1; i < splitOne.length; i++) {
+    splitTwo[i] = splitOne[i].replace(/\n!/, "<br !/>!").split("<br !/>");
+  }
 
   return data ? (
     <View style={styles.slide}>
       {data.notFound || !data.detail ? (
         <Text style={styles.notFound}>{data.message || "not data"}</Text>
       ) : (
-        <View>
-          <View style={styles.checkboxContainer}>
-            <CheckBox
-              value={isSelectedState}
-              onValueChange={handleSelection}
-              style={styles.checkbox}
-            />
-            <Text style={styles.label}>Thêm vào list từ vựng</Text>
-          </View>
+        <View style={styles.slideText}>
+          {selector && (
+            <View style={styles.checkboxContainer}>
+              <CheckBox
+                value={isSelectedState}
+                onValueChange={handleSelection}
+                style={styles.checkbox}
+              />
+              <Text style={styles.label}>Thêm vào list từ vựng</Text>
+            </View>
+          )}
           <Text style={styles.word}>{data.word}</Text>
-          {data.detail.splitTwo[0] !== "/" && (
-            <Text style={styles.spelling}>{data.detail.splitTwo[0]}</Text>
+          {splitTwo[0] !== "/" && (
+            <Text style={styles.spelling}>{splitTwo[0]}</Text>
           )}
           <Text>
-            {data.detail.splitTwo.map(splitTwoLv1 => {
+            {splitTwo.map(splitTwoLv1 => {
               return (
                 typeof splitTwoLv1 === "object" &&
                 splitTwoLv1.map((splitTwoLv2, i) => {
@@ -72,7 +89,9 @@ const Search = props => {
                       <Text key={i} style={styles.phrase}>
                         {phrase}
                       </Text>,
-                      <Text key={`content-${i}`}>{content}</Text>,
+                      <Text key={`content-${i}`} style={styles.content}>
+                        {content}
+                      </Text>,
                     ];
                   } else if (i === 1) {
                     splitTwoLv2 = splitTwoLv2.split("\n!");
@@ -111,14 +130,14 @@ const styles = StyleSheet.create({
     paddingTop: 30,
     flexBasis: "100%",
     flex: 1,
-    maxWidth: width - 20,
+    width: width - 20,
     display: "flex",
     flexDirection: "row",
   },
   slideText: {
     width: "100%",
     textAlign: "left",
-    fontSize: 20,
+    fontSize: 12,
   },
   spelling: {
     textAlign: "center",
@@ -127,6 +146,9 @@ const styles = StyleSheet.create({
     color: "red",
     fontWeight: "bold",
     fontSize: 20,
+  },
+  content: {
+    textTransform: "capitalize",
   },
   idioms: {
     color: "red",

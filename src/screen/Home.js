@@ -12,7 +12,6 @@ const Home = () => {
 
   useEffect(() => {
     getToken(dispatch);
-    // eslint-disable-next-line
   }, []);
 
   return token ? <User /> : <LoginForm />;

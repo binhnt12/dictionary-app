@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Text, TextInput, Button, ScrollView, StyleSheet } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import SearchComponent from "../components/Search";
@@ -7,22 +7,24 @@ import { getSingleWord, getMultipleWord } from "../actions/search";
 const Search = () => {
   const [text, onChangeText] = useState("");
   const debounceRef = useRef(null);
+  const showSearchComponent = useRef(false);
 
   const data = useSelector(state => state.search.data);
   const listWord = useSelector(state => state.user.listWord);
-  const showSearchComponent = useRef(false);
-  // console.log(JSON.stringify(data.words, null, 2));
+  const token = Boolean(useSelector(state => state.user.token));
   const dispatch = useDispatch();
 
-  const isSelected = listWord.findIndex(e => e.word === data.word) !== -1;
+  const isSelected =
+    listWord && listWord.findIndex(e => e.word === data.word) !== -1;
 
   const onSearcch = value => {
     showSearchComponent.current = false;
+
     onChangeText(value);
+
     if (debounceRef.current) {
       clearTimeout(debounceRef.current);
     }
-
     debounceRef.current = setTimeout(() => {
       getMultipleWord(dispatch, value);
     }, 500);
@@ -50,7 +52,12 @@ const Search = () => {
         ))}
 
       {data && showSearchComponent.current && (
-        <SearchComponent data={data} isSelected={isSelected} />
+        <SearchComponent
+          key={isSelected}
+          data={data}
+          isSelected={isSelected}
+          selector={token}
+        />
       )}
     </ScrollView>
   );

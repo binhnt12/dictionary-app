@@ -4,13 +4,14 @@ import { createMaterialTopTabNavigator } from "@react-navigation/material-top-ta
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import Home from "../screen/Home";
 import Search from "../screen/Search";
+import CreateWord from "../screen/CreateWord";
 
 const Tab = createMaterialTopTabNavigator();
 
 const BottomTabNavigator = () => {
   return (
     <Tab.Navigator
-      initialRouteName="Home"
+      initialRouteName="CreateWord"
       tabBarPosition="bottom"
       tabBarOptions={{ showIcon: true, tabStyle: { padding: 0 } }}
     >
@@ -45,6 +46,25 @@ const BottomTabNavigator = () => {
           tabBarLabel: ({ focused }) => (
             <Text style={focused ? styles.textFocused : styles.text}>
               Search
+            </Text>
+          ),
+        }}
+      />
+
+      <Tab.Screen
+        name="CreateWord"
+        component={CreateWord}
+        options={{
+          tabBarIcon: ({ focused }) => (
+            <Icon
+              name="format-annotation-plus"
+              size={25}
+              color={focused ? "#283593" : "#a0a0a0"}
+            />
+          ),
+          tabBarLabel: ({ focused }) => (
+            <Text style={focused ? styles.textFocused : styles.text}>
+              Create Word
             </Text>
           ),
         }}

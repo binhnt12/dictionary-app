@@ -20,12 +20,10 @@ const User = () => {
     return () => {
       clearListWord(dispatch);
     };
-    // eslint-disable-next-line
   }, []);
 
   useEffect(() => {
     setKey(key === 0 ? 1 : 0);
-    // eslint-disable-next-line
   }, [listWord]);
 
   const handleLogout = () => {
