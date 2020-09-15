@@ -77,7 +77,7 @@ export default function user(state = defaultStates, action) {
       return { ...state, token };
 
     case GET_LIST_WORD:
-      return { ...state, listWord: action.payload.listWord };
+      return { ...state, listWord: action.payload.listWord || [] };
     case CLEAR_LIST_WORD:
       return { ...state, listWord: [] };
 
@@ -88,7 +88,7 @@ export default function user(state = defaultStates, action) {
         listWord: [...state.listWord, action.payload],
       };
     case REMOVE_FROM_LIST_WORD:
-      console.log("REMOVE_FROM_LIST_WORD:", state.listWord);
+      // console.log("REMOVE_FROM_LIST_WORD:", state.listWord);
       const newListWord = state.listWord.filter(o => o.word !== action.payload);
       return {
         ...state,

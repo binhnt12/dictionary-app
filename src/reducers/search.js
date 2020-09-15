@@ -7,9 +7,7 @@ const defaultStates = {
     idx: null,
     word: "",
     words: [],
-    detail: {
-      splitTwo: [],
-    },
+    detail: "",
   },
 };
 
