@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { Text, View, StyleSheet, Dimensions } from "react-native";
+import { View, StyleSheet, Dimensions } from "react-native";
 import CheckBox from "@react-native-community/checkbox";
+import { Content, ListItem, Text, Radio, Right, Left } from "native-base";
 import { useDispatch } from "react-redux";
 
 import { addToListWord, removeFromListWord } from "../actions/user";
@@ -8,9 +9,10 @@ import { addToListWord, removeFromListWord } from "../actions/user";
 const { width } = Dimensions.get("window");
 
 const Search = props => {
-  const { isSelected, data, selector } = props;
+  const { radioProps, data, selector } = props;
+  console.log("hehe", radioProps);
 
-  const [isSelectedState, setSelectionState] = useState(isSelected);
+  const [radio, setRadio] = useState(radioProps || { 1: false, 2: false });
 
   const dispatch = useDispatch();
 
@@ -18,12 +20,30 @@ const Search = props => {
     return null;
   }
 
-  const handleSelection = value => {
-    setSelectionState(value);
-    if (value) {
-      addToListWord(dispatch, data);
+  const handleRadio = i => {
+    console.log(i);
+    const temp = { ...radio };
+    const j = i === "1" ? "2" : "1";
+    if (radio[i]) {
+      temp[i] = false;
+      setRadio(temp);
+      if (i === "1") {
+        removeFromListWord(dispatch, "unknown", data.idx);
+      } else {
+        removeFromListWord(dispatch, "known", data.idx);
+      }
     } else {
-      removeFromListWord(dispatch, data.word);
+      const k = temp[j];
+      temp[i] = true;
+      temp[j] = false;
+      setRadio(temp);
+      if (i === "1") {
+        addToListWord(dispatch, "unknown", data);
+        k && removeFromListWord(dispatch, "known", data.idx);
+      } else {
+        addToListWord(dispatch, "known", data);
+        k && removeFromListWord(dispatch, "unknown", data.idx);
+      }
     }
   };
 
@@ -53,14 +73,26 @@ const Search = props => {
         <Text style={styles.notFound}>{data.message || "not data"}</Text>
       ) : (
         <View style={styles.slideText}>
-          {selector && (
-            <View style={styles.checkboxContainer}>
-              <CheckBox
-                value={isSelectedState}
-                onValueChange={handleSelection}
-                style={styles.checkbox}
-              />
-              <Text style={styles.label}>Thêm vào list từ vựng</Text>
+          {true && (
+            <View style={styles.radioContainer}>
+              <View style={styles.radio}>
+                <Radio
+                  color={"#f0ad4e"}
+                  selectedColor={"#5cb85c"}
+                  selected={radio["1"]}
+                  onPress={() => handleRadio("1")}
+                />
+                <Text>Chưa biết</Text>
+              </View>
+              <View style={styles.radio}>
+                <Radio
+                  color={"#f0ad4e"}
+                  selectedColor={"#5cb85c"}
+                  selected={radio["2"]}
+                  onPress={() => handleRadio("2")}
+                />
+                <Text>Đã biết</Text>
+              </View>
             </View>
           )}
           <Text style={styles.word}>{data.word}</Text>
@@ -165,15 +197,22 @@ const styles = StyleSheet.create({
   multipleWord: {
     textDecorationLine: "underline",
   },
-  checkboxContainer: {
+  // checkboxContainer: {
+  //   flexDirection: "row",
+  //   // marginBottom: 20,
+  // },
+  // checkbox: {
+  //   alignSelf: "center",
+  // },
+  // label: {
+  //   margin: 8,
+  // },
+  radioContainer: {
     flexDirection: "row",
-    // marginBottom: 20,
+    justifyContent: "space-around",
   },
-  checkbox: {
-    alignSelf: "center",
-  },
-  label: {
-    margin: 8,
+  radio: {
+    alignItems: "center",
   },
 });
 

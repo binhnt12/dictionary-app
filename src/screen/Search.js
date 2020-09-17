@@ -6,19 +6,33 @@ import { getSingleWord, getMultipleWord } from "../actions/search";
 
 const Search = () => {
   const [text, onChangeText] = useState("");
+  const [key, setKey] = useState(0);
+  const [multiWord, setMultiWord] = useState(true);
   const debounceRef = useRef(null);
   const showSearchComponent = useRef(false);
 
   const data = useSelector(state => state.search.data);
-  const listWord = useSelector(state => state.user.listWord);
+  const listWordUnknown = useSelector(state => state.user.listWord.unknown);
+  const listWordKnown = useSelector(state => state.user.listWord.known);
   const token = Boolean(useSelector(state => state.user.token));
   const dispatch = useDispatch();
 
-  const isSelected =
-    listWord && listWord.findIndex(e => e.word === data.word) !== -1;
+  let radioProps = {
+    1:
+      listWordUnknown &&
+      listWordUnknown.findIndex(e => e.word === data.word) !== -1,
+    2:
+      listWordKnown &&
+      listWordKnown.findIndex(e => e.word === data.word) !== -1,
+  };
+
+  useEffect(() => {
+    setKey(key === 0 ? 1 : 0);
+  }, []);
 
   const onSearcch = value => {
     showSearchComponent.current = false;
+    setMultiWord(true);
 
     onChangeText(value);
 
@@ -32,6 +46,7 @@ const Search = () => {
 
   const handleSearch = value => {
     showSearchComponent.current = true;
+    setMultiWord(false);
     getSingleWord(dispatch, value);
   };
 
@@ -39,7 +54,8 @@ const Search = () => {
     <ScrollView>
       <TextInput onChangeText={value => onSearcch(value)} value={text} />
       <Button onPress={() => handleSearch(text)} title="Search" />
-      {data.words &&
+      {multiWord &&
+        data.words &&
         data.words !== [] &&
         data.words.map((o, i) => (
           <Text
@@ -53,9 +69,9 @@ const Search = () => {
 
       {data && showSearchComponent.current && (
         <SearchComponent
-          key={isSelected}
+          key={key}
           data={data}
-          isSelected={isSelected}
+          radioProps={radioProps}
           selector={token}
         />
       )}

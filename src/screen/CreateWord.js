@@ -10,6 +10,7 @@ import {
 import { Picker } from "native-base";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useDispatch } from "react-redux";
+import shortid from "shortid";
 
 import { addToListWord } from "../actions/user";
 
@@ -103,10 +104,10 @@ const CreateWord = () => {
     if (detail && word) {
       data.detail = detail;
       data.word = word;
-      data.idx = -1;
+      data.idx = shortid.generate();
       data.message = "Success";
       data.notFound = false;
-      addToListWord(dispatch, data);
+      addToListWord(dispatch, "unknown", data);
     }
   };
 

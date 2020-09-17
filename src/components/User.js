@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { View, Text, Button, StyleSheet } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import { ScrollView } from "react-native-gesture-handler";
+import { Picker } from "native-base";
 
 import Carousel from "./Carousel";
 
@@ -10,10 +11,14 @@ import { getListWord, clearListWord } from "../actions/user";
 
 const User = () => {
   const [key, setKey] = useState(0);
+  const [selected, setSelected] = useState(1);
+
   const username = useSelector(state => state.user.username);
-  const listWord = useSelector(state => state.user.listWord);
-  // const words = useSelector(state => state.user.words);
+  const listWordUnknown = useSelector(state => state.user.listWord.unknown);
+  const listWordKnown = useSelector(state => state.user.listWord.known);
   const dispatch = useDispatch();
+
+  let listWord = selected === 1 ? listWordUnknown : listWordKnown;
 
   useEffect(() => {
     getListWord(dispatch);
@@ -35,7 +40,18 @@ const User = () => {
       <Text>{username}</Text>
       <Button title="Logout" onPress={() => handleLogout()} />
       <View style={styles.container}>
-        {listWord && <Carousel key={key} items={listWord} />}
+        <Picker
+          mode="dropdown"
+          style={{ width: 200 }}
+          selectedValue={selected}
+          onValueChange={setSelected}
+        >
+          <Picker.Item label="Chưa biết" value={1} />
+          <Picker.Item label="Đã biết" value={2} />
+        </Picker>
+        {listWord && (
+          <Carousel key={key} items={listWord} unknown={selected === 1} />
+        )}
       </View>
     </ScrollView>
   );

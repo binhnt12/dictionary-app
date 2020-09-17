@@ -29,7 +29,7 @@ export const signUp = (dispatch, values) => {
           payload: error.response.data,
         });
       }
-      console.error(error.response.data);
+      throw error;
     });
 };
 
@@ -48,7 +48,7 @@ export const login = (dispatch, values) => {
           payload: error.response.data,
         });
       }
-      console.error(error.response.data);
+      throw error;
     });
 };
 
@@ -69,7 +69,7 @@ export const logout = dispatch => {
           payload: error.response.data,
         });
       }
-      console.error(error.response.data);
+      throw error;
     });
 };
 
@@ -79,11 +79,11 @@ export const getToken = dispatch => {
   });
 };
 
-export const getListWord = async dispatch => {
+export const getListWord = async (dispatch, type) => {
   let token;
   try {
     token = await AsyncStorage.getItem("token");
-    return callApi("GET", "api/protect/getListWord", null, token)
+    return callApi("GET", `api/protect/getListWord`, null, token)
       .then(res => {
         dispatch({
           type: GET_LIST_WORD,
@@ -91,7 +91,10 @@ export const getListWord = async dispatch => {
         });
       })
       .catch(error => {
-        console.error(error.response.data);
+        if (error.response) {
+          console.error(error.response.data);
+        }
+        throw error;
       });
   } catch (e) {
     console.log({ e });
@@ -104,7 +107,7 @@ export const clearListWord = dispatch => {
   });
 };
 
-export const addToListWord = async (dispatch, data) => {
+export const addToListWord = async (dispatch, type, data) => {
   console.log("addToListWord", data);
   if (data.words && data.words.length > 0) {
     delete data.words;
@@ -112,41 +115,46 @@ export const addToListWord = async (dispatch, data) => {
   let token;
   try {
     token = await AsyncStorage.getItem("token");
-    return callApi("POST", "api/protect/addWord", data, token)
+    return callApi("POST", `api/protect/addWord/?type=${type}`, data, token)
       .then(res => {
         dispatch({
           type: ADD_TO_LIST_WORD,
-          payload: data,
+          payload: { type, data },
         });
       })
       .catch(error => {
-        console.log(11111);
-        console.error(error.response.data);
+        if (error.response) {
+          console.error(error.response.data);
+        }
+        throw error;
       });
   } catch (e) {
     console.log({ e });
   }
 };
 
-export const removeFromListWord = async (dispatch, word) => {
+export const removeFromListWord = async (dispatch, type, idx) => {
   let token;
   try {
+    // 58693
     token = await AsyncStorage.getItem("token");
     return callApi(
       "GET",
-      `api/protect/removeFromListWord/?word=${word}`,
+      `api/protect/removeFromListWord/?type=${type}&idx=${idx}`,
       null,
       token,
     )
       .then(res => {
         dispatch({
           type: REMOVE_FROM_LIST_WORD,
-          payload: word,
+          payload: { type, idx },
         });
       })
       .catch(error => {
-        console.log(11111);
-        console.error(error.response.data);
+        if (error.response) {
+          console.error(error.response.data);
+        }
+        throw error;
       });
   } catch (e) {
     console.log({ e });

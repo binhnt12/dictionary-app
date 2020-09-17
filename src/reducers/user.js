@@ -20,7 +20,10 @@ const defaultStates = {
   token: null,
   userId: null,
   error: null,
-  listWord: [],
+  listWord: {
+    unknown: [],
+    known: [],
+  },
 };
 
 export default function user(state = defaultStates, action) {
@@ -77,22 +80,41 @@ export default function user(state = defaultStates, action) {
       return { ...state, token };
 
     case GET_LIST_WORD:
-      return { ...state, listWord: action.payload.listWord || [] };
+      const unknown = action.payload.unknown || [];
+      const known = action.payload.known || [];
+      return { ...state, listWord: { unknown, known } };
     case CLEAR_LIST_WORD:
-      return { ...state, listWord: [] };
+      return { ...state, listWord: { unknown: [], known: [] } };
 
     case ADD_TO_LIST_WORD:
       console.log("ADD_TO_LIST_WORD:", action.payload);
+      console.log("ADD_TO_LIST_WORD_2:", state.listWord);
       return {
         ...state,
-        listWord: [...state.listWord, action.payload],
+        listWord:
+          action.payload.type === "unknown"
+            ? {
+                ...state.listWord,
+                unknown: [...state.listWord.unknown, action.payload.data],
+              }
+            : {
+                ...state.listWord,
+                known: [...state.listWord.known, action.payload.data],
+              },
       };
     case REMOVE_FROM_LIST_WORD:
-      // console.log("REMOVE_FROM_LIST_WORD:", state.listWord);
-      const newListWord = state.listWord.filter(o => o.word !== action.payload);
+      console.log("REMOVE_FROM_LIST_WORD:", state.listWord);
+      const newListWord =
+        action.payload.type === "unknown"
+          ? state.listWord.unknown.filter(o => o.idx !== action.payload.idx)
+          : state.listWord.known.filter(o => o.idx !== action.payload.idx);
+      console.log(newListWord);
       return {
         ...state,
-        listWord: newListWord,
+        listWord:
+          action.payload.type === "unknown"
+            ? { ...state.listWord, unknown: newListWord }
+            : { ...state.listWord, known: newListWord },
       };
 
     default:

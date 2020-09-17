@@ -13,8 +13,8 @@ const Home = () => {
   useEffect(() => {
     getToken(dispatch);
   }, []);
-
-  return token ? <User /> : <LoginForm />;
+  // TODO
+  return !token ? <User /> : <LoginForm />;
 };
 
 export default Home;
