@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import Search from "./Search";
@@ -120,4 +120,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Carousel;
+export default memo(Carousel);

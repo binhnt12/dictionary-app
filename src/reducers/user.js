@@ -8,6 +8,7 @@ import {
   LOGOUT_FAILURE,
   LOGOUT_SUCCESS,
   GET_TOKEN,
+  CLEAR_INFO_USER,
   GET_LIST_WORD,
   CLEAR_LIST_WORD,
   ADD_TO_LIST_WORD,
@@ -67,6 +68,9 @@ export default function user(state = defaultStates, action) {
     case LOGOUT_FAILURE:
       return state;
 
+    case CLEAR_INFO_USER:
+      return defaultStates;
+
     case GET_TOKEN:
       let token;
       const getToken = async () => {
@@ -84,6 +88,7 @@ export default function user(state = defaultStates, action) {
       const known = action.payload.known || [];
       return { ...state, listWord: { unknown, known } };
     case CLEAR_LIST_WORD:
+      console.log(2222);
       return { ...state, listWord: { unknown: [], known: [] } };
 
     case ADD_TO_LIST_WORD:

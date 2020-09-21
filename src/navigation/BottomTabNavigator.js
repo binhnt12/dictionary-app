@@ -11,9 +11,13 @@ const Tab = createMaterialTopTabNavigator();
 const BottomTabNavigator = () => {
   return (
     <Tab.Navigator
-      initialRouteName="CreateWord"
+      initialRouteName="Search"
       tabBarPosition="bottom"
-      tabBarOptions={{ showIcon: true, tabStyle: { padding: 0 } }}
+      tabBarOptions={{
+        showIcon: true,
+        tabStyle: { padding: 0 },
+        indicatorStyle: { backgroundColor: "#0672cf" },
+      }}
     >
       <Tab.Screen
         name="Home"
@@ -23,7 +27,7 @@ const BottomTabNavigator = () => {
             <Icon
               name="home"
               size={25}
-              color={focused ? "#283593" : "#a0a0a0"}
+              color={focused ? "#0672cf" : "#a0a0a0"}
             />
           ),
           tabBarLabel: ({ focused }) => (
@@ -40,7 +44,7 @@ const BottomTabNavigator = () => {
             <Icon
               name="magnify"
               size={25}
-              color={focused ? "#283593" : "#a0a0a0"}
+              color={focused ? "#0672cf" : "#a0a0a0"}
             />
           ),
           tabBarLabel: ({ focused }) => (
@@ -59,7 +63,7 @@ const BottomTabNavigator = () => {
             <Icon
               name="format-annotation-plus"
               size={25}
-              color={focused ? "#283593" : "#a0a0a0"}
+              color={focused ? "#0672cf" : "#a0a0a0"}
             />
           ),
           tabBarLabel: ({ focused }) => (
@@ -80,7 +84,7 @@ const styles = StyleSheet.create({
   },
   textFocused: {
     fontSize: 11,
-    color: "#283593",
+    color: "#0672cf",
   },
 });
 

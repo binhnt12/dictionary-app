@@ -1,7 +1,7 @@
-import React, { useState } from "react";
-import { View, StyleSheet, Dimensions } from "react-native";
+import React, { memo, useEffect, useState } from "react";
+import { Text, View, StyleSheet, Dimensions } from "react-native";
+// import { Radio } from "native-base";
 import CheckBox from "@react-native-community/checkbox";
-import { Content, ListItem, Text, Radio, Right, Left } from "native-base";
 import { useDispatch } from "react-redux";
 
 import { addToListWord, removeFromListWord } from "../actions/user";
@@ -10,23 +10,28 @@ const { width } = Dimensions.get("window");
 
 const Search = props => {
   const { radioProps, data, selector } = props;
-  console.log("hehe", radioProps);
 
-  const [radio, setRadio] = useState(radioProps || { 1: false, 2: false });
+  const [toggleCheckBox, setToggleCheckBox] = useState({ 1: false, 2: false });
 
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    setToggleCheckBox(radioProps);
+  }, [radioProps]);
+
+  console.log("hehe", radioProps);
 
   if (!data) {
     return null;
   }
 
-  const handleRadio = i => {
+  const handleCheckBox = i => {
     console.log(i);
-    const temp = { ...radio };
+    const temp = { ...toggleCheckBox };
     const j = i === "1" ? "2" : "1";
-    if (radio[i]) {
+    if (toggleCheckBox[i]) {
       temp[i] = false;
-      setRadio(temp);
+      setToggleCheckBox(temp);
       if (i === "1") {
         removeFromListWord(dispatch, "unknown", data.idx);
       } else {
@@ -36,7 +41,7 @@ const Search = props => {
       const k = temp[j];
       temp[i] = true;
       temp[j] = false;
-      setRadio(temp);
+      setToggleCheckBox(temp);
       if (i === "1") {
         addToListWord(dispatch, "unknown", data);
         k && removeFromListWord(dispatch, "known", data.idx);
@@ -73,32 +78,27 @@ const Search = props => {
         <Text style={styles.notFound}>{data.message || "not data"}</Text>
       ) : (
         <View style={styles.slideText}>
-          {true && (
-            <View style={styles.radioContainer}>
-              <View style={styles.radio}>
-                <Radio
-                  color={"#f0ad4e"}
-                  selectedColor={"#5cb85c"}
-                  selected={radio["1"]}
-                  onPress={() => handleRadio("1")}
-                />
-                <Text>Chưa biết</Text>
-              </View>
-              <View style={styles.radio}>
-                <Radio
-                  color={"#f0ad4e"}
-                  selectedColor={"#5cb85c"}
-                  selected={radio["2"]}
-                  onPress={() => handleRadio("2")}
-                />
-                <Text>Đã biết</Text>
-              </View>
-            </View>
-          )}
           <Text style={styles.word}>{data.word}</Text>
           {splitTwo[0] !== "/" && (
             <Text style={styles.spelling}>{splitTwo[0]}</Text>
           )}
+          <View style={styles.line} />
+          <View style={styles.checkBoxContainer}>
+            <View style={styles.checkBox}>
+              <CheckBox
+                value={toggleCheckBox["1"]}
+                onValueChange={() => handleCheckBox("1")}
+              />
+              <Text style={styles.checkboxLabel}>Chưa biết</Text>
+            </View>
+            <View style={styles.checkBox}>
+              <CheckBox
+                value={toggleCheckBox["2"]}
+                onValueChange={() => handleCheckBox("2")}
+              />
+              <Text style={styles.checkboxLabel}>Đã biết</Text>
+            </View>
+          </View>
           <Text>
             {splitTwo.map(splitTwoLv1 => {
               return (
@@ -119,7 +119,7 @@ const Search = props => {
 
                     return [
                       <Text key={i} style={styles.phrase}>
-                        {phrase}
+                        {"\n" + phrase}
                       </Text>,
                       <Text key={`content-${i}`} style={styles.content}>
                         {content}
@@ -133,7 +133,7 @@ const Search = props => {
                         {"\n\t"}Idioms
                       </Text>,
                       splitTwoLv2.map((splitTwoLv3, j) => (
-                        <Text key={`idioms-${j}`}>
+                        <Text key={`idioms-${j}`} style={styles.contentIdiom}>
                           {`\n${j + 1}. ${splitTwoLv3
                             .replace(/!/, "")
                             .replace(/\n-/g, "\n\u25e6")
@@ -157,14 +157,16 @@ const Search = props => {
 
 const styles = StyleSheet.create({
   slide: {
-    paddingHorizontal: 20,
+    // paddingHorizontal: 20,
     paddingBottom: 10,
-    paddingTop: 30,
+    paddingTop: 10,
     flexBasis: "100%",
     flex: 1,
-    width: width - 20,
+    width: "100%",
     display: "flex",
     flexDirection: "row",
+    alignSelf: "center",
+    fontFamily: "Helvetica",
   },
   slideText: {
     width: "100%",
@@ -172,48 +174,59 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
   spelling: {
-    textAlign: "center",
+    fontStyle: "italic",
+    fontSize: 18,
+  },
+  line: {
+    width: "100%",
+    height: 2,
+    marginTop: 5,
+    backgroundColor: "#e0e0e0",
   },
   phrase: {
-    color: "red",
+    color: "#000000",
     fontWeight: "bold",
     fontSize: 20,
+    textTransform: "capitalize",
+    lineHeight: 30,
   },
   content: {
-    textTransform: "capitalize",
+    lineHeight: 20,
+    fontSize: 15,
   },
   idioms: {
-    color: "red",
+    color: "#fc9f0d",
     fontWeight: "bold",
     fontSize: 18,
     fontStyle: "italic",
+  },
+  contentIdiom: {
+    fontSize: 15,
+    lineHeight: 20,
   },
   notFound: {
     color: "red",
   },
   word: {
-    textAlign: "center",
+    fontWeight: "bold",
+    fontSize: 20,
   },
   multipleWord: {
     textDecorationLine: "underline",
   },
-  // checkboxContainer: {
-  //   flexDirection: "row",
-  //   // marginBottom: 20,
-  // },
-  // checkbox: {
-  //   alignSelf: "center",
-  // },
-  // label: {
-  //   margin: 8,
-  // },
   radioContainer: {
     flexDirection: "row",
     justifyContent: "space-around",
   },
-  radio: {
+  checkBoxContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  checkBox: {
+    flexDirection: "row",
+    justifyContent: "center",
     alignItems: "center",
   },
 });
 
-export default Search;
+export default memo(Search);

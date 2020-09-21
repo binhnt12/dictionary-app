@@ -6,6 +6,7 @@ import {
   SIGN_UP_FAILURE,
   LOGOUT_SUCCESS,
   LOGOUT_FAILURE,
+  CLEAR_INFO_USER,
   GET_TOKEN,
   GET_LIST_WORD,
   CLEAR_LIST_WORD,
@@ -71,6 +72,12 @@ export const logout = dispatch => {
       }
       throw error;
     });
+};
+
+export const clearInfoUser = dispatch => {
+  dispatch({
+    type: CLEAR_INFO_USER,
+  });
 };
 
 export const getToken = dispatch => {

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 
-import LoginForm from "../components/LoginForm";
+import LoginAndRegisterScreen from "../navigation/LoginAndRegisterNavigator";
 import User from "../components/User";
 
 import { getToken } from "../actions/user";
@@ -14,7 +14,7 @@ const Home = () => {
     getToken(dispatch);
   }, []);
   // TODO
-  return !token ? <User /> : <LoginForm />;
+  return token ? <User /> : <LoginAndRegisterScreen />;
 };
 
 export default Home;
