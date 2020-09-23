@@ -13,3 +13,5 @@ export const GET_LIST_WORD = "GET_LIST_WORD";
 export const CLEAR_LIST_WORD = "CLEAR_LIST_WORD";
 export const ADD_TO_LIST_WORD = "ADD_TO_LIST_WORD";
 export const REMOVE_FROM_LIST_WORD = "REMOVE_FROM_LIST_WORD";
+
+export const TOGGLE_THEME = "TOGGLE_THEME";

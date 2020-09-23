@@ -7,6 +7,7 @@ import thunk from "redux-thunk";
 import rootReducer from "./src/reducers";
 
 import BottomTabNavigator from "./src/navigation/BottomTabNavigator";
+import DarkThemeProvider from "./src/utils/DarkThemeProvider";
 
 export default function App() {
   const Stack = createStackNavigator();
@@ -15,17 +16,19 @@ export default function App() {
 
   return (
     <Provider store={store}>
-      <NavigationContainer>
-        <Stack.Navigator>
-          <Stack.Screen
-            name="root"
-            component={BottomTabNavigator}
-            options={{
-              headerShown: false,
-            }}
-          />
-        </Stack.Navigator>
-      </NavigationContainer>
+      <DarkThemeProvider>
+        <NavigationContainer>
+          <Stack.Navigator>
+            <Stack.Screen
+              name="root"
+              component={BottomTabNavigator}
+              options={{
+                headerShown: false,
+              }}
+            />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </DarkThemeProvider>
     </Provider>
   );
 }

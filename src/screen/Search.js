@@ -9,8 +9,60 @@ import {
 } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useSelector, useDispatch } from "react-redux";
+import styled from "styled-components";
+
 import SearchComponent from "../components/Search";
 import { getSingleWord, getMultipleWord } from "../actions/search";
+import { COLORS } from "../contants/colors";
+
+const Container = styled.ScrollView.attrs({
+  contentContainerStyle: {
+    flex: 1,
+    fontFamily: "Helvetica",
+    paddingHorizontal: 20,
+  },
+})`
+  background-color: ${COLORS.whiteBlue};
+`;
+
+const Title = styled.Text`
+  font-size: 25px;
+  color: ${COLORS.black};
+  font-weight: bold;
+  width: 100%;
+  align-self: center;
+  margin-top: 25px;
+`;
+
+const SearchContainer = styled.View`
+  background-color: #fff;
+  border-radius: 90px;
+  border-color: ${props => (props.isFocusInput ? COLORS.lightBlue : "#fff")};
+  border-style: solid;
+  border-width: 1px;
+  margin-top: 14px;
+  padding-right: 23px;
+  padding-left: 23px;
+  width: 100%;
+  min-height: 46px;
+  flex-direction: row;
+  align-self: center;
+  overflow: hidden;
+`;
+
+const SearchInput = styled.TextInput`
+  width: 90%;
+  font-size: 15px;
+  color: #000;
+  letter-spacing: -0.24px;
+  line-height: 20px;
+  padding-right: 20px;
+`;
+
+const TextMultipleWord = styled.Text`
+  font-size: 18px;
+  color: ${props => (props.theme.theme === "dark" ? COLORS.lightBlue : "#000")};
+`;
 
 const Search = () => {
   const [text, onChangeText] = useState("");
@@ -70,17 +122,12 @@ const Search = () => {
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>Tìm kiếm từ vựng</Text>
-      <View
-        style={
-          isFocusInput ? styles.searchContainerFocus : styles.searchContainer
-        }
-      >
-        <TextInput
+    <Container>
+      <Title>Tìm kiếm từ vựng</Title>
+      <SearchContainer isFocusInput={isFocusInput}>
+        <SearchInput
           onChangeText={value => onSearcch(value)}
           value={text}
-          style={styles.input}
           onFocus={() => onFocus()}
           onBlur={() => setFocusInput(false)}
           placeholder="Tìm kiếm"
@@ -96,7 +143,7 @@ const Search = () => {
             color="#FFFFFF"
           />
         </TouchableOpacity>
-      </View>
+      </SearchContainer>
       <View style={styles.multiWordContainer}>
         {multiWord &&
           data.words &&
@@ -107,7 +154,7 @@ const Search = () => {
               style={styles.buttonMultipleWord}
               onPress={() => onSearcch(o.word)}
             >
-              <Text style={styles.textMultipleWord}>{o.word}</Text>
+              <TextMultipleWord>{o.word}</TextMultipleWord>
             </TouchableOpacity>
           ))}
       </View>
@@ -121,25 +168,11 @@ const Search = () => {
           />
         </ScrollView>
       )}
-    </ScrollView>
+    </Container>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#F5F5F2",
-    fontFamily: "Helvetica",
-    paddingHorizontal: 20,
-  },
-  title: {
-    fontSize: 25,
-    color: "#000000",
-    fontWeight: "bold",
-    width: "100%",
-    alignSelf: "center",
-    marginTop: 25,
-  },
   notFound: {
     color: "red",
   },
@@ -162,48 +195,8 @@ const styles = StyleSheet.create({
   textMultipleWord: {
     fontSize: 18,
   },
-  searchContainer: {
-    backgroundColor: "#FFFFFF",
-    borderRadius: 90,
-    borderColor: "#FFFFFF",
-    borderStyle: "solid",
-    borderWidth: 1,
-    marginTop: 14,
-    paddingRight: 23,
-    paddingLeft: 23,
-    width: "100%",
-    marginHorizontal: 20,
-    height: 46,
-    flexDirection: "row",
-    alignSelf: "center",
-    overflow: "hidden",
-  },
-  searchContainerFocus: {
-    backgroundColor: "#FFFFFF",
-    borderRadius: 90,
-    borderColor: "#41CEBB",
-    borderStyle: "solid",
-    borderWidth: 1,
-    marginTop: 14,
-    paddingRight: 23,
-    paddingLeft: 23,
-    width: "100%",
-    marginHorizontal: 20,
-    height: 46,
-    flexDirection: "row",
-    alignSelf: "center",
-    overflow: "hidden",
-  },
   searchIcon: {
     padding: 10,
-  },
-  input: {
-    width: "90%",
-    fontSize: 15,
-    color: "#000000",
-    letterSpacing: -0.24,
-    lineHeight: 20,
-    paddingRight: 20,
   },
   buttonSearch: {
     backgroundColor: "#41CEBB",

@@ -70,6 +70,7 @@ export const Carousel = (props: any) => {
               key={index}
               data={item}
               selector
+              user
               radioProps={{ 1: unknown, 2: !unknown }}
             />
           );

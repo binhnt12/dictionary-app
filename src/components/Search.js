@@ -1,19 +1,70 @@
-import React, { memo, useEffect, useState } from "react";
+import React, { memo, useContext, useEffect, useState } from "react";
 import { Text, View, StyleSheet, Dimensions } from "react-native";
-// import { Radio } from "native-base";
 import CheckBox from "@react-native-community/checkbox";
 import { useDispatch } from "react-redux";
+import styled, { ThemeContext } from "styled-components";
 
 import { addToListWord, removeFromListWord } from "../actions/user";
+import { COLORS } from "../contants/colors";
 
 const { width } = Dimensions.get("window");
 
+const Message = styled.Text`
+  color: ${COLORS.orange};
+`;
+
+const Word = styled.Text`
+  font-size: 25px;
+  font-weight: bold;
+  color: ${COLORS.black};
+`;
+
+const Spelling = styled.Text`
+  font-style: italic;
+  font-size: 18px;
+  color: ${COLORS.black};
+`;
+
+const CheckboxLabel = styled.Text`
+  color: ${COLORS.black};
+`;
+
+const Phrase = styled.Text`
+  color: ${props =>
+    props.theme.theme === "dark" ? COLORS.lightBlue : COLORS.blue};
+  font-weight: bold;
+  font-size: 20px;
+  text-transform: capitalize;
+  line-height: 30px;
+`;
+
+const Content = styled.Text`
+  color: ${COLORS.black};
+  line-height: 20px;
+  font-size: 15px;
+`;
+
+const Idioms = styled.Text`
+  color: ${COLORS.orange};
+  font-weight: bold;
+  font-size: 18px;
+  font-style: italic;
+`;
+
+const ContentIdiom = styled.Text`
+  color: ${COLORS.black};
+  font-size: 15px;
+  line-height: 20px;
+`;
+
 const Search = props => {
-  const { radioProps, data, selector } = props;
+  const { radioProps, data, selector, user } = props;
 
   const [toggleCheckBox, setToggleCheckBox] = useState({ 1: false, 2: false });
 
   const dispatch = useDispatch();
+
+  const themeContext = useContext(ThemeContext);
 
   useEffect(() => {
     setToggleCheckBox(radioProps);
@@ -72,83 +123,76 @@ const Search = props => {
     splitTwo[i] = splitOne[i].replace(/\n!/, "<br !/>!").split("<br !/>");
   }
 
+  const contentComponent = splitTwo.map(splitTwoLv1 => {
+    return (
+      typeof splitTwoLv1 === "object" &&
+      splitTwoLv1.map((splitTwoLv2, i) => {
+        if (i === 0) {
+          const phrase = splitTwoLv2
+            .slice(splitTwoLv2.indexOf("*"), splitTwoLv2.indexOf("\n"))
+            .replace(/(\* {2})|(\* )/, "");
+
+          const content = splitTwoLv2
+            .slice(splitTwoLv2.indexOf("\n"))
+            .replace(/\n-/g, "\n\u2023")
+            .replace(/\n=/g, "\n\u25e6");
+
+          return [
+            <Phrase key={i}>{"\n" + phrase}</Phrase>,
+            <Content key={`content-${i}`}>{content}</Content>,
+          ];
+        } else if (i === 1) {
+          splitTwoLv2 = splitTwoLv2.split("\n!");
+
+          return [
+            <Idioms key={`idioms-title`}>{"\n\t"}Idioms</Idioms>,
+            splitTwoLv2.map((splitTwoLv3, j) => (
+              <ContentIdiom key={`idioms-${j}`}>
+                {`\n${j + 1}. ${splitTwoLv3
+                  .replace(/!/, "")
+                  .replace(/\n-/g, "\n\u25e6")
+                  .replace(/\n=/g, "\n\t\u2022 ")}`}
+              </ContentIdiom>
+            )),
+          ];
+        }
+        return <Text key={`content`}>{splitTwoLv2.replace(/@/g, "")}</Text>;
+      })
+    );
+  });
+
   return data ? (
-    <View style={styles.slide}>
+    <View style={user ? styles.slideUser : styles.slide}>
       {data.notFound || !data.detail ? (
-        <Text style={styles.notFound}>{data.message || "not data"}</Text>
+        <Message>{data.message}</Message>
       ) : (
-        <View style={styles.slideText}>
-          <Text style={styles.word}>{data.word}</Text>
-          {splitTwo[0] !== "/" && (
-            <Text style={styles.spelling}>{splitTwo[0]}</Text>
-          )}
-          <View style={styles.line} />
+        <View style={user ? styles.slideTextUser : styles.slideText}>
+          <Word>{data.word}</Word>
+          {splitTwo[0] !== "/" && <Spelling>{splitTwo[0]}</Spelling>}
           <View style={styles.checkBoxContainer}>
-            <View style={styles.checkBox}>
+            <View style={styles.checkBoxInner}>
               <CheckBox
+                tintColors={{
+                  true: themeContext.theme === "dark" ? "#41cebb" : "#0672cf",
+                }}
                 value={toggleCheckBox["1"]}
                 onValueChange={() => handleCheckBox("1")}
               />
-              <Text style={styles.checkboxLabel}>Chưa biết</Text>
+              <CheckboxLabel>Chưa biết</CheckboxLabel>
             </View>
-            <View style={styles.checkBox}>
+            <View style={styles.checkBoxInner}>
               <CheckBox
+                tintColors={{
+                  true: themeContext.theme === "dark" ? "#41cebb" : "#0672cf",
+                }}
                 value={toggleCheckBox["2"]}
                 onValueChange={() => handleCheckBox("2")}
               />
-              <Text style={styles.checkboxLabel}>Đã biết</Text>
+              <CheckboxLabel>Đã biết</CheckboxLabel>
             </View>
           </View>
-          <Text>
-            {splitTwo.map(splitTwoLv1 => {
-              return (
-                typeof splitTwoLv1 === "object" &&
-                splitTwoLv1.map((splitTwoLv2, i) => {
-                  if (i === 0) {
-                    const phrase = splitTwoLv2
-                      .slice(
-                        splitTwoLv2.indexOf("*"),
-                        splitTwoLv2.indexOf("\n"),
-                      )
-                      .replace(/(\* {2})|(\* )/, "");
-
-                    const content = splitTwoLv2
-                      .slice(splitTwoLv2.indexOf("\n"))
-                      .replace(/\n-/g, "\n\u2023")
-                      .replace(/\n=/g, "\n\u25e6");
-
-                    return [
-                      <Text key={i} style={styles.phrase}>
-                        {"\n" + phrase}
-                      </Text>,
-                      <Text key={`content-${i}`} style={styles.content}>
-                        {content}
-                      </Text>,
-                    ];
-                  } else if (i === 1) {
-                    splitTwoLv2 = splitTwoLv2.split("\n!");
-
-                    return [
-                      <Text key={`idioms-title`} style={styles.idioms}>
-                        {"\n\t"}Idioms
-                      </Text>,
-                      splitTwoLv2.map((splitTwoLv3, j) => (
-                        <Text key={`idioms-${j}`} style={styles.contentIdiom}>
-                          {`\n${j + 1}. ${splitTwoLv3
-                            .replace(/!/, "")
-                            .replace(/\n-/g, "\n\u25e6")
-                            .replace(/\n=/g, "\n\t\u2022 ")}`}
-                        </Text>
-                      )),
-                    ];
-                  }
-                  return (
-                    <Text key={`content`}>{splitTwoLv2.replace(/@/g, "")}</Text>
-                  );
-                })
-              );
-            })}
-          </Text>
+          <View style={styles.line} />
+          <Text>{contentComponent}</Text>
         </View>
       )}
     </View>
@@ -157,15 +201,20 @@ const Search = props => {
 
 const styles = StyleSheet.create({
   slide: {
-    // paddingHorizontal: 20,
     paddingBottom: 10,
     paddingTop: 10,
-    flexBasis: "100%",
     flex: 1,
     width: "100%",
-    display: "flex",
     flexDirection: "row",
     alignSelf: "center",
+    fontFamily: "Helvetica",
+  },
+  slideUser: {
+    paddingBottom: 10,
+    paddingTop: 30,
+    flex: 1,
+    flexDirection: "row",
+    justifyContent: "center",
     fontFamily: "Helvetica",
   },
   slideText: {
@@ -173,43 +222,15 @@ const styles = StyleSheet.create({
     textAlign: "left",
     fontSize: 12,
   },
-  spelling: {
-    fontStyle: "italic",
-    fontSize: 18,
+  slideTextUser: {
+    width: width - 40,
+    textAlign: "left",
+    fontSize: 12,
   },
   line: {
-    width: "100%",
     height: 2,
     marginTop: 5,
     backgroundColor: "#e0e0e0",
-  },
-  phrase: {
-    color: "#000000",
-    fontWeight: "bold",
-    fontSize: 20,
-    textTransform: "capitalize",
-    lineHeight: 30,
-  },
-  content: {
-    lineHeight: 20,
-    fontSize: 15,
-  },
-  idioms: {
-    color: "#fc9f0d",
-    fontWeight: "bold",
-    fontSize: 18,
-    fontStyle: "italic",
-  },
-  contentIdiom: {
-    fontSize: 15,
-    lineHeight: 20,
-  },
-  notFound: {
-    color: "red",
-  },
-  word: {
-    fontWeight: "bold",
-    fontSize: 20,
   },
   multipleWord: {
     textDecorationLine: "underline",
@@ -222,7 +243,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
   },
-  checkBox: {
+  checkBoxInner: {
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",

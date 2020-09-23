@@ -11,7 +11,7 @@ const Tab = createMaterialTopTabNavigator();
 const BottomTabNavigator = () => {
   return (
     <Tab.Navigator
-      initialRouteName="Search"
+      initialRouteName="Home"
       tabBarPosition="bottom"
       tabBarOptions={{
         showIcon: true,
