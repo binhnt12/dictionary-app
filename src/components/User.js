@@ -1,16 +1,7 @@
-import React, {
-  memo,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { memo, useCallback, useEffect, useState } from "react";
 import {
   View,
-  Text,
   StyleSheet,
-  Animated,
   StatusBar,
   Dimensions,
   TouchableWithoutFeedback,
@@ -28,7 +19,7 @@ import { logout } from "../actions/user";
 import { getListWord, clearListWord } from "../actions/user";
 import { COLORS } from "../contants/colors";
 
-const { width, height } = Dimensions.get("window");
+const { height } = Dimensions.get("window");
 
 const Container = styled.View`
   min-height: ${height}px;
@@ -47,24 +38,16 @@ const Welcome = styled.Text`
 const User = () => {
   const [key, setKey] = useState(0);
   const [isUnknown, setUnknown] = useState(true);
-  const [translateX, setTranslateX] = useState(null);
   const [isShowModal, setShowModal] = useState(false);
-  const isFirstRun = useRef(true);
 
   const username = useSelector(state => state.user.username);
   const listWordUnknown = useSelector(state => state.user.listWord.unknown);
   const listWordKnown = useSelector(state => state.user.listWord.known);
   const dispatch = useDispatch();
 
-  // let listWordRef = isUnknown ? listWordUnknown : listWordKnown;
-  let translateValue = new Animated.Value(0);
+  let listWord = isUnknown ? listWordUnknown : listWordKnown;
 
   console.log(1111);
-
-  const listWord = useMemo(
-    () => (isUnknown ? listWordUnknown : listWordKnown),
-    [isUnknown],
-  );
 
   useEffect(() => {
     getListWord(dispatch);
@@ -77,31 +60,16 @@ const User = () => {
     setKey(key === 0 ? 1 : 0);
   }, [listWord]);
 
-  useEffect(() => {
-    if (isFirstRun.current) {
-      isFirstRun.current = false;
-      return;
-    }
-    setTranslateX(translateModal);
-    Animated.timing(translateValue, {
-      toValue: 1,
-      useNativeDriver: true,
-      duration: 300,
-    }).start();
-  }, [isShowModal]);
-
   const handleLogout = () => {
     logout(dispatch);
   };
 
-  const handleUnknown = useCallback(value => {
-    setUnknown(value);
-  }, []);
-
-  const translateModal = translateValue.interpolate({
-    inputRange: [0, 1],
-    outputRange: isShowModal ? [-width, 0] : [0, -width],
-  });
+  const handleUnknown = useCallback(
+    value => {
+      setUnknown(value);
+    },
+    [handleUnknown],
+  );
 
   return (
     <ScrollView>
@@ -135,20 +103,13 @@ const User = () => {
           </View>
         </Container>
       </TouchableWithoutFeedback>
-      <Animated.View
-        style={[
-          styles.modal,
-          {
-            transform: [{ translateX: translateX || -width }],
-          },
-        ]}
-      >
-        <Sidebar
-          username={username}
-          handleUnknownProps={handleUnknown}
-          logout={handleLogout}
-        />
-      </Animated.View>
+
+      <Sidebar
+        username={username}
+        handleUnknownProps={handleUnknown}
+        logout={handleLogout}
+        isShowModal={isShowModal}
+      />
     </ScrollView>
   );
 };
@@ -165,15 +126,6 @@ const styles = StyleSheet.create({
     height: 48,
     backgroundColor: "#0672cf",
     justifyContent: "center",
-  },
-  modal: {
-    flex: 1,
-    position: "absolute",
-    top: 0,
-    bottom: 0,
-    right: "20%",
-    left: 0,
-    zIndex: 2,
   },
   menu: {},
   menuIcon: {

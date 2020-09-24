@@ -1,13 +1,14 @@
-import React, { useState } from "react";
-import { View, Switch, Dimensions } from "react-native";
+import React, { useRef, useState } from "react";
+import { View, Switch, Animated, StyleSheet, Dimensions } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useDispatch } from "react-redux";
+import { useEffect } from "react/cjs/react.development";
 import styled from "styled-components";
 
 import { toggleTheme } from "../actions/setting";
 import { COLORS } from "../contants/colors";
 
-const { height } = Dimensions.get("window");
+const { height, width } = Dimensions.get("window");
 
 const Container = styled.View`
   min-height: ${height}px;
@@ -138,12 +139,29 @@ const SettingOptionText = styled.Text`
 `;
 
 const Sidebar = props => {
-  const { username, handleUnknownProps } = props;
+  const { username, handleUnknownProps, isShowModal } = props;
 
   const [isUnknown, setUnknown] = useState(true);
   const [isEnabled, setEnabled] = useState(false);
+  const [translateX, setTranslateX] = useState(null);
+  // const [isShowModal, setShowModal] = useState(false);
+  const isFirstRun = useRef(true);
+  let translateValue = new Animated.Value(0);
 
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (isFirstRun.current) {
+      isFirstRun.current = false;
+      return;
+    }
+    setTranslateX(translateModal);
+    Animated.timing(translateValue, {
+      toValue: 1,
+      useNativeDriver: true,
+      duration: 300,
+    }).start();
+  }, [isShowModal]);
 
   const handleSwitch = () => {
     toggleTheme(dispatch, !isEnabled);
@@ -155,49 +173,75 @@ const Sidebar = props => {
     handleUnknownProps(value);
   };
 
+  const translateModal = translateValue.interpolate({
+    inputRange: [0, 1],
+    outputRange: isShowModal ? [-width, 0] : [0, -width],
+  });
+
   return (
-    <Container>
-      <User>
-        <Avatar>
-          <AvatarText>{username[0] || "T"}</AvatarText>
-        </Avatar>
-        <View>
-          <Username numberOfLines={2}>{username || "noname"}</Username>
-          <LogoutButton>
-            <LogoutText onPress={() => props.logout()}>Logout</LogoutText>
-          </LogoutButton>
-        </View>
-      </User>
-      <Filter>
-        <FilterText>Lọc theo</FilterText>
-        <Line />
-        <FilterOption onPress={() => handleUnknown(true)}>
-          <OptionIcon name="help-circle" size={25} isUnknown={isUnknown} />
-          <FilterOptionText isUnknown={isUnknown}>Chưa biết</FilterOptionText>
-        </FilterOption>
-        <FilterLine isUnknown={isUnknown} />
-        <FilterOption onPress={() => handleUnknown(false)}>
-          <OptionIcon name="shield-check" size={25} isUnknown={!isUnknown} />
-          <FilterOptionText isUnknown={!isUnknown}>Đã biết</FilterOptionText>
-        </FilterOption>
-        <FilterLine isUnknown={!isUnknown} />
-      </Filter>
-      <Setting>
-        <FilterText>Cài đặt</FilterText>
-        <Line />
-        <SettingOption>
-          <SettingOptionText>Dark Mode</SettingOptionText>
-          <Switch
-            trackColor={{ false: "#767577", true: "#0672cf" }}
-            thumbColor={isEnabled ? "#fc9f0d" : "#f4f3f4"}
-            ios_backgroundColor="#3e3e3e"
-            onValueChange={() => handleSwitch()}
-            value={isEnabled}
-          />
-        </SettingOption>
-      </Setting>
-    </Container>
+    <Animated.View
+      style={[
+        styles.modal,
+        {
+          transform: [{ translateX: translateX || -width }],
+        },
+      ]}
+    >
+      <Container>
+        <User>
+          <Avatar>
+            <AvatarText>{username[0] || "T"}</AvatarText>
+          </Avatar>
+          <View>
+            <Username numberOfLines={2}>{username || "noname"}</Username>
+            <LogoutButton>
+              <LogoutText onPress={() => props.logout()}>Logout</LogoutText>
+            </LogoutButton>
+          </View>
+        </User>
+        <Filter>
+          <FilterText>Lọc theo</FilterText>
+          <Line />
+          <FilterOption onPress={() => handleUnknown(true)}>
+            <OptionIcon name="help-circle" size={25} isUnknown={isUnknown} />
+            <FilterOptionText isUnknown={isUnknown}>Chưa biết</FilterOptionText>
+          </FilterOption>
+          <FilterLine isUnknown={isUnknown} />
+          <FilterOption onPress={() => handleUnknown(false)}>
+            <OptionIcon name="shield-check" size={25} isUnknown={!isUnknown} />
+            <FilterOptionText isUnknown={!isUnknown}>Đã biết</FilterOptionText>
+          </FilterOption>
+          <FilterLine isUnknown={!isUnknown} />
+        </Filter>
+        <Setting>
+          <FilterText>Cài đặt</FilterText>
+          <Line />
+          <SettingOption>
+            <SettingOptionText>Dark Mode</SettingOptionText>
+            <Switch
+              trackColor={{ false: "#767577", true: "#0672cf" }}
+              thumbColor={isEnabled ? "#fc9f0d" : "#f4f3f4"}
+              ios_backgroundColor="#3e3e3e"
+              onValueChange={() => handleSwitch()}
+              value={isEnabled}
+            />
+          </SettingOption>
+        </Setting>
+      </Container>
+    </Animated.View>
   );
 };
+
+const styles = StyleSheet.create({
+  modal: {
+    flex: 1,
+    position: "absolute",
+    top: 0,
+    bottom: 0,
+    right: "20%",
+    left: 0,
+    zIndex: 2,
+  },
+});
 
 export default Sidebar;

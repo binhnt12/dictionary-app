@@ -3,6 +3,7 @@ import { Text, View, StyleSheet, Dimensions } from "react-native";
 import CheckBox from "@react-native-community/checkbox";
 import { useDispatch } from "react-redux";
 import styled, { ThemeContext } from "styled-components";
+import LazyloadView from "./Lazyload/LazyloadView";
 
 import { addToListWord, removeFromListWord } from "../actions/user";
 import { COLORS } from "../contants/colors";
@@ -57,10 +58,18 @@ const ContentIdiom = styled.Text`
   line-height: 20px;
 `;
 
+const Line = styled.View`
+  height: 2px;
+  margin-top: 5px;
+  background-color: #999;
+`;
+
 const Search = props => {
   const { radioProps, data, selector, user } = props;
 
-  const [toggleCheckBox, setToggleCheckBox] = useState({ 1: false, 2: false });
+  const [toggleCheckBox, setToggleCheckBox] = useState(
+    radioProps || { 1: false, 2: false },
+  );
 
   const dispatch = useDispatch();
 
@@ -162,7 +171,10 @@ const Search = props => {
   });
 
   return data ? (
-    <View style={user ? styles.slideUser : styles.slide}>
+    <LazyloadView
+      host={user ? "unique-lazyload-list-name" : null}
+      style={user ? styles.slideUser : styles.slide}
+    >
       {data.notFound || !data.detail ? (
         <Message>{data.message}</Message>
       ) : (
@@ -191,11 +203,11 @@ const Search = props => {
               <CheckboxLabel>Đã biết</CheckboxLabel>
             </View>
           </View>
-          <View style={styles.line} />
+          <Line />
           <Text>{contentComponent}</Text>
         </View>
       )}
-    </View>
+    </LazyloadView>
   ) : null;
 };
 
@@ -227,11 +239,6 @@ const styles = StyleSheet.create({
     textAlign: "left",
     fontSize: 12,
   },
-  line: {
-    height: 2,
-    marginTop: 5,
-    backgroundColor: "#e0e0e0",
-  },
   multipleWord: {
     textDecorationLine: "underline",
   },
@@ -240,6 +247,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-around",
   },
   checkBoxContainer: {
+    marginTop: 5,
     flexDirection: "row",
     justifyContent: "space-between",
   },

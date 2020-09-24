@@ -1,9 +1,10 @@
-import React, { memo } from "react";
+import React, { memo, useMemo } from "react";
 import { View, Text, StyleSheet } from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
+import LazyloadScrollView from "./Lazyload/LazyloadScrollView";
+
 import Search from "./Search";
 
-export const Carousel = (props: any) => {
+export const Carousel = props => {
   const { items, unknown } = props;
   const itemsPerInterval =
     props.itemsPerInterval === undefined ? 1 : props.itemsPerInterval;
@@ -12,7 +13,7 @@ export const Carousel = (props: any) => {
   const [intervals, setIntervals] = React.useState(1);
   const [width, setWidth] = React.useState(0);
 
-  const init = (width: number) => {
+  const init = width => {
     // initialise width
     setWidth(width);
     // initialise total intervals
@@ -20,7 +21,7 @@ export const Carousel = (props: any) => {
     setIntervals(Math.ceil(totalItems / itemsPerInterval));
   };
 
-  const getInterval = (offset: any) => {
+  const getInterval = offset => {
     for (let i = 1; i <= intervals; i++) {
       if (offset < (width / intervals) * i) {
         return i;
@@ -46,9 +47,25 @@ export const Carousel = (props: any) => {
     );
   }
 
+  const content = useMemo(
+    () =>
+      items.map((item, index) => {
+        return (
+          <Search
+            key={index}
+            data={item}
+            selector
+            user
+            radioProps={{ 1: unknown, 2: !unknown }}
+          />
+        );
+      }),
+    [unknown],
+  );
+
   return (
     <View>
-      <ScrollView
+      <LazyloadScrollView
         horizontal={true}
         contentContainerStyle={{
           ...styles.scrollView,
@@ -63,19 +80,10 @@ export const Carousel = (props: any) => {
         scrollEventThrottle={200}
         pagingEnabled
         decelerationRate="fast"
+        name="unique-lazyload-list-name"
       >
-        {items.map((item: any, index: number) => {
-          return (
-            <Search
-              key={index}
-              data={item}
-              selector
-              user
-              radioProps={{ 1: unknown, 2: !unknown }}
-            />
-          );
-        })}
-      </ScrollView>
+        {content}
+      </LazyloadScrollView>
       <View style={styles.bullets}>{bullets}</View>
     </View>
   );
