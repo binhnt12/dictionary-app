@@ -8,9 +8,11 @@ import {
   REMOVE_FROM_LIST_WORD_SUCCESS,
   REMOVE_FROM_LIST_WORD_ERROR,
   CLEAR_ERROR_WORD,
+  LOADING,
 } from "../contants/actions";
 
 export const getListWord = async (dispatch, type) => {
+  dispatch({ type: LOADING });
   let token;
   try {
     token = await AsyncStorage.getItem("token");
@@ -42,6 +44,7 @@ export const addToListWord = async (dispatch, type, data, cb) => {
   if (data.words && data.words.length > 0) {
     delete data.words;
   }
+  dispatch({ type: LOADING });
   let token;
   try {
     token = await AsyncStorage.getItem("token");
@@ -78,7 +81,7 @@ export const addToListWord = async (dispatch, type, data, cb) => {
 export const removeFromListWord = async (dispatch, type, idx) => {
   let token;
   try {
-    // 58693
+    dispatch({ type: LOADING });
     token = await AsyncStorage.getItem("token");
     return callApi(
       "GET",

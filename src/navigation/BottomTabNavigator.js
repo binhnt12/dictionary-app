@@ -5,12 +5,18 @@ import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import Home from "../screen/Home";
 import Search from "../screen/Search";
 import CreateWord from "../screen/CreateWord";
+import Loading from "../components/Loading";
+import { useSelector } from "react-redux";
 
 const Tab = createMaterialTopTabNavigator();
 
 const BottomTabNavigator = () => {
-  return (
+  const loading = useSelector(state => state.loading.loading);
+  return [
+    loading && <Loading key="loading" />,
+
     <Tab.Navigator
+      key="tab-navigator"
       initialRouteName="CreateWord"
       tabBarPosition="bottom"
       tabBarOptions={{
@@ -73,8 +79,8 @@ const BottomTabNavigator = () => {
           ),
         }}
       />
-    </Tab.Navigator>
-  );
+    </Tab.Navigator>,
+  ];
 };
 
 const styles = StyleSheet.create({

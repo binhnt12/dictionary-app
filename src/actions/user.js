@@ -7,10 +7,12 @@ import {
   LOGOUT_FAILURE,
   CLEAR_INFO_USER,
   GET_TOKEN,
+  LOADING,
 } from "../contants/actions";
 import callApi from "../utils/apiCaller";
 
 export const signUp = (dispatch, values) => {
+  dispatch({ type: LOADING });
   return callApi("POST", "api/user/signUp", values)
     .then(res => {
       dispatch({
@@ -30,6 +32,7 @@ export const signUp = (dispatch, values) => {
 };
 
 export const login = (dispatch, values) => {
+  dispatch({ type: LOADING });
   return callApi("POST", "api/user/login", values)
     .then(res => {
       dispatch({
@@ -49,6 +52,7 @@ export const login = (dispatch, values) => {
 };
 
 export const logout = dispatch => {
+  dispatch({ type: LOADING });
   return callApi("GET", "api/user/logout")
     .then(res => {
       dispatch({

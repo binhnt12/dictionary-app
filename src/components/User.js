@@ -90,9 +90,7 @@ const User = () => {
               />
             </TouchableOpacity>
           </View>
-          {(!listWord || !username) && (
-            <Welcome>{`Welcome ${username}!`}</Welcome>
-          )}
+          {listWord.length === 0 && <Welcome>{`Welcome ${username}!`}</Welcome>}
           {!!errorWord && (
             <Message type="error">{MESSAGES[errorWord].text}</Message>
           )}

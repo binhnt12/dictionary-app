@@ -25,3 +25,5 @@ export const CLEAR_ERROR_WORD = "CLEAR_ERROR_WORD";
 export const CLEAR_ERROR_SEARCH = "CLEAR_ERROR_SEARCH";
 
 export const SET_MESSAGE = "SET_MESSAGE";
+
+export const LOADING = "LOADING";

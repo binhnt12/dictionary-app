@@ -4,6 +4,7 @@ import user from "./user";
 import setting from "./setting";
 import word from "./word";
 import message from "./message";
+import loading from "./loading";
 
 const rootReducer = combineReducers({
   search,
@@ -11,6 +12,7 @@ const rootReducer = combineReducers({
   setting,
   word,
   message,
+  loading,
 });
 
 export default rootReducer;

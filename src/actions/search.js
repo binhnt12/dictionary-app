@@ -2,10 +2,12 @@ import {
   GET_SINGLE_WORD_SUCCESS,
   GET_SINGLE_WORD_ERROR,
   GET_MULTIPLE_WORD,
+  LOADING,
 } from "../contants/actions";
 import callApi from "../utils/apiCaller";
 
 export const getSingleWord = (dispatch, value) => {
+  dispatch({ type: LOADING });
   return new Promise((resolve, reject) => {
     return callApi("GET", `api/search/single/?word=${value}`, null)
       .then(res => {
