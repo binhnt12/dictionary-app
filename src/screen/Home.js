@@ -13,7 +13,7 @@ const Home = () => {
   useEffect(() => {
     getToken(dispatch);
   }, []);
-  // TODO
+
   return token ? <User /> : <LoginAndRegisterScreen />;
 };
 

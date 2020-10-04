@@ -1,5 +1,4 @@
 import React, { useState, useContext, useEffect } from "react";
-// import { Text } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import styled, { ThemeContext } from "styled-components";
 import shortid from "shortid";

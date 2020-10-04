@@ -144,7 +144,6 @@ const Sidebar = props => {
   const [isUnknown, setUnknown] = useState(true);
   const [isEnabled, setEnabled] = useState(false);
   const [translateX, setTranslateX] = useState(null);
-  // const [isShowModal, setShowModal] = useState(false);
   const isFirstRun = useRef(true);
   let translateValue = new Animated.Value(0);
 

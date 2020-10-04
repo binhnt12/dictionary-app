@@ -9,7 +9,6 @@ import {
 } from "../contants/actions";
 
 const defaultStates = {
-  // set error null
   error: null,
   refresh: false,
   listWord: {
@@ -30,32 +29,26 @@ export default function word(state = defaultStates, action) {
     case ADD_TO_LIST_WORD_SUCCESS:
       return {
         ...state,
-        listWord:
-          action.payload.type === "unknown"
-            ? {
-                ...state.listWord,
-                unknown: [...state.listWord.unknown, action.payload.data],
-              }
-            : {
-                ...state.listWord,
-                known: [...state.listWord.known, action.payload.data],
-              },
+        listWord: {
+          ...state.listWord,
+          [action.payload.type]: [
+            ...state.listWord[action.payload.type],
+            action.payload.data,
+          ],
+        },
+
         refresh: !state.refresh,
       };
     case ADD_TO_LIST_WORD_ERROR:
       return { ...state, error: action.payload, refresh: !state.refresh };
 
     case REMOVE_FROM_LIST_WORD_SUCCESS:
-      const newListWord =
-        action.payload.type === "unknown"
-          ? state.listWord.unknown.filter(o => o.idx !== action.payload.idx)
-          : state.listWord.known.filter(o => o.idx !== action.payload.idx);
+      const newListWord = state.listWord[action.payload.type].filter(
+        o => o.idx !== action.payload.idx,
+      );
       return {
         ...state,
-        listWord:
-          action.payload.type === "unknown"
-            ? { ...state.listWord, unknown: newListWord }
-            : { ...state.listWord, known: newListWord },
+        listWord: { ...state.listWord, [action.payload.type]: newListWord },
         refresh: !state.refresh,
       };
     case REMOVE_FROM_LIST_WORD_ERROR:
