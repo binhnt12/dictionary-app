@@ -1,4 +1,4 @@
-import React, { useState, useRef, useMemo } from "react";
+import React, { useState, useRef, useMemo, useEffect } from "react";
 import {
   Text,
   TextInput,
@@ -14,6 +14,9 @@ import styled from "styled-components";
 import SearchComponent from "../components/Search";
 import { getSingleWord, getMultipleWord } from "../actions/search";
 import { COLORS } from "../contants/colors";
+import Message from "../components/Message";
+import { MESSAGES } from "../contants/messages";
+import { CLEAR_ERROR_WORD, CLEAR_ERROR_SEARCH } from "../contants/actions";
 
 const Container = styled.ScrollView.attrs({
   contentContainerStyle: {
@@ -60,7 +63,7 @@ const SearchInput = styled.TextInput`
 `;
 
 const TextMultipleWord = styled.Text`
-  font-size: 18px;
+  font-size: 15px;
   color: ${props => (props.theme.theme === "dark" ? COLORS.lightBlue : "#000")};
 `;
 
@@ -69,12 +72,16 @@ const Search = () => {
   const [isFocusInput, setFocusInput] = useState(false);
   const [multiWord, setMultiWord] = useState(true);
   const debounceRef = useRef(null);
-  const showSearchComponent = useRef(false);
+  const [showSearchComponent, setShowSearchComponent] = useState(false);
 
   const data = useSelector(state => state.search.data);
-  const listWordUnknown = useSelector(state => state.user.listWord.unknown);
-  const listWordKnown = useSelector(state => state.user.listWord.known);
-  const token = Boolean(useSelector(state => state.user.token));
+  const listWordUnknown = useSelector(state => state.word.listWord.unknown);
+  const listWordKnown = useSelector(state => state.word.listWord.known);
+  const refresh = useSelector(state => state.word.refresh);
+  const token = !!useSelector(state => state.user.token);
+  const errorWord = useSelector(state => state.word.error);
+  const errorSearch = useSelector(state => state.search.error);
+
   const dispatch = useDispatch();
 
   let radioProps;
@@ -92,14 +99,13 @@ const Search = () => {
         data.idx &&
         listWordKnown.findIndex(e => e.idx === data.idx) !== -1,
     };
-  }, [listWordUnknown, listWordKnown, showSearchComponent.current, data]);
-
-  console.log("------------------");
-  console.log({ radioProps });
+  }, [listWordUnknown, listWordKnown, showSearchComponent, data, refresh]);
 
   const onFocus = () => {
-    showSearchComponent.current = false;
+    setShowSearchComponent(false);
     setFocusInput(true);
+    dispatch({ type: CLEAR_ERROR_WORD });
+    dispatch({ type: CLEAR_ERROR_SEARCH });
   };
 
   const onSearcch = value => {
@@ -116,9 +122,14 @@ const Search = () => {
   };
 
   const handleSearch = value => {
-    showSearchComponent.current = true;
+    dispatch({ type: CLEAR_ERROR_WORD });
+    dispatch({ type: CLEAR_ERROR_SEARCH });
+    getSingleWord(dispatch, value)
+      .then(res => {
+        res && setShowSearchComponent(true);
+      })
+      .catch(err => console.log(err));
     setMultiWord(false);
-    getSingleWord(dispatch, value);
   };
 
   return (
@@ -144,6 +155,11 @@ const Search = () => {
           />
         </TouchableOpacity>
       </SearchContainer>
+      {(!!errorSearch || !!errorWord) && (
+        <Message type="error">
+          {MESSAGES[errorSearch || errorWord].text}
+        </Message>
+      )}
       <View style={styles.multiWordContainer}>
         {multiWord &&
           data.words &&
@@ -159,7 +175,7 @@ const Search = () => {
           ))}
       </View>
 
-      {data && showSearchComponent.current && (
+      {data && showSearchComponent && (
         <ScrollView>
           <SearchComponent
             data={data}
@@ -188,12 +204,9 @@ const styles = StyleSheet.create({
     borderColor: "#41CEBB",
     borderWidth: 1,
     borderStyle: "solid",
-    paddingHorizontal: 20,
-    paddingVertical: 10,
+    paddingHorizontal: 16,
+    paddingVertical: 6,
     margin: 5,
-  },
-  textMultipleWord: {
-    fontSize: 18,
   },
   searchIcon: {
     padding: 10,

@@ -3,8 +3,6 @@ import { useSelector } from "react-redux";
 const useColor = () => {
   const darkMode = useSelector(state => state.setting.darkMode);
 
-  console.log(darkMode);
-
   return darkMode
     ? {
         COLORS: {

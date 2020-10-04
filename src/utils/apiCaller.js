@@ -1,6 +1,6 @@
 import axios from "axios";
-// import { API_URL } from "../constants/api";
 const API_URL = process.env.API_URL || "http://192.168.5.110:5000";
+// const API_URL = "https://sleepy-waters-44542.herokuapp.com";
 
 export default function callApi(method, endpoint, data, token) {
   if (token) {

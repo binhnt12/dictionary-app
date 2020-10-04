@@ -16,8 +16,10 @@ import Carousel from "./Carousel";
 import Sidebar from "./Sidebar";
 
 import { logout } from "../actions/user";
-import { getListWord, clearListWord } from "../actions/user";
+import { getListWord, clearListWord } from "../actions/word";
 import { COLORS } from "../contants/colors";
+import Message from "./Message";
+import { MESSAGES } from "../contants/messages";
 
 const { height } = Dimensions.get("window");
 
@@ -41,13 +43,12 @@ const User = () => {
   const [isShowModal, setShowModal] = useState(false);
 
   const username = useSelector(state => state.user.username);
-  const listWordUnknown = useSelector(state => state.user.listWord.unknown);
-  const listWordKnown = useSelector(state => state.user.listWord.known);
+  const listWordUnknown = useSelector(state => state.word.listWord.unknown);
+  const listWordKnown = useSelector(state => state.word.listWord.known);
+  const errorWord = useSelector(state => state.word.error);
   const dispatch = useDispatch();
 
   let listWord = isUnknown ? listWordUnknown : listWordKnown;
-
-  console.log(1111);
 
   useEffect(() => {
     getListWord(dispatch);
@@ -91,6 +92,9 @@ const User = () => {
           </View>
           {(!listWord || !username) && (
             <Welcome>{`Welcome ${username}!`}</Welcome>
+          )}
+          {!!errorWord && (
+            <Message type="error">{MESSAGES[errorWord].text}</Message>
           )}
           <View
             style={styles.slideShow}

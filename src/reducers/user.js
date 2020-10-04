@@ -9,10 +9,6 @@ import {
   LOGOUT_SUCCESS,
   GET_TOKEN,
   CLEAR_INFO_USER,
-  GET_LIST_WORD,
-  CLEAR_LIST_WORD,
-  ADD_TO_LIST_WORD,
-  REMOVE_FROM_LIST_WORD,
 } from "../contants/actions";
 
 const defaultStates = {
@@ -21,10 +17,7 @@ const defaultStates = {
   token: null,
   userId: null,
   error: null,
-  listWord: {
-    unknown: [],
-    known: [],
-  },
+  refresh: false,
 };
 
 export default function user(state = defaultStates, action) {
@@ -82,45 +75,6 @@ export default function user(state = defaultStates, action) {
       };
       getToken();
       return { ...state, token };
-
-    case GET_LIST_WORD:
-      const unknown = action.payload.unknown || [];
-      const known = action.payload.known || [];
-      return { ...state, listWord: { unknown, known } };
-    case CLEAR_LIST_WORD:
-      console.log(2222);
-      return { ...state, listWord: { unknown: [], known: [] } };
-
-    case ADD_TO_LIST_WORD:
-      console.log("ADD_TO_LIST_WORD:", action.payload);
-      console.log("ADD_TO_LIST_WORD_2:", state.listWord);
-      return {
-        ...state,
-        listWord:
-          action.payload.type === "unknown"
-            ? {
-                ...state.listWord,
-                unknown: [...state.listWord.unknown, action.payload.data],
-              }
-            : {
-                ...state.listWord,
-                known: [...state.listWord.known, action.payload.data],
-              },
-      };
-    case REMOVE_FROM_LIST_WORD:
-      console.log("REMOVE_FROM_LIST_WORD:", state.listWord);
-      const newListWord =
-        action.payload.type === "unknown"
-          ? state.listWord.unknown.filter(o => o.idx !== action.payload.idx)
-          : state.listWord.known.filter(o => o.idx !== action.payload.idx);
-      console.log(newListWord);
-      return {
-        ...state,
-        listWord:
-          action.payload.type === "unknown"
-            ? { ...state.listWord, unknown: newListWord }
-            : { ...state.listWord, known: newListWord },
-      };
 
     default:
       return state;

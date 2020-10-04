@@ -30,4 +30,9 @@ export const COLORS = {
     light: "#fc9f0d",
     dark: "#fc9f0d",
   }),
+
+  red: theme("theme", {
+    light: "#d32f2f",
+    dark: "#fd32f2f",
+  }),
 };

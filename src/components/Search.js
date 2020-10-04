@@ -1,11 +1,11 @@
 import React, { memo, useContext, useEffect, useState } from "react";
 import { Text, View, StyleSheet, Dimensions } from "react-native";
 import CheckBox from "@react-native-community/checkbox";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import styled, { ThemeContext } from "styled-components";
 import LazyloadView from "./Lazyload/LazyloadView";
 
-import { addToListWord, removeFromListWord } from "../actions/user";
+import { addToListWord, removeFromListWord } from "../actions/word";
 import { COLORS } from "../contants/colors";
 
 const { width } = Dimensions.get("window");
@@ -71,22 +71,20 @@ const Search = props => {
     radioProps || { 1: false, 2: false },
   );
 
+  const refresh = useSelector(state => state.word.refresh);
   const dispatch = useDispatch();
 
   const themeContext = useContext(ThemeContext);
 
   useEffect(() => {
     setToggleCheckBox(radioProps);
-  }, [radioProps]);
-
-  console.log("hehe", radioProps);
+  }, [radioProps, refresh]);
 
   if (!data) {
     return null;
   }
 
   const handleCheckBox = i => {
-    console.log(i);
     const temp = { ...toggleCheckBox };
     const j = i === "1" ? "2" : "1";
     if (toggleCheckBox[i]) {
@@ -181,29 +179,32 @@ const Search = props => {
         <View style={user ? styles.slideTextUser : styles.slideText}>
           <Word>{data.word}</Word>
           {splitTwo[0] !== "/" && <Spelling>{splitTwo[0]}</Spelling>}
-          <View style={styles.checkBoxContainer}>
-            <View style={styles.checkBoxInner}>
-              <CheckBox
-                tintColors={{
-                  true: themeContext.theme === "dark" ? "#41cebb" : "#0672cf",
-                }}
-                value={toggleCheckBox["1"]}
-                onValueChange={() => handleCheckBox("1")}
-              />
-              <CheckboxLabel>Chưa biết</CheckboxLabel>
+          {selector && (
+            <View style={styles.checkBoxContainer}>
+              <View style={styles.checkBoxInner}>
+                <CheckBox
+                  tintColors={{
+                    true: themeContext.theme === "dark" ? "#41cebb" : "#0672cf",
+                  }}
+                  value={toggleCheckBox["1"]}
+                  onValueChange={() => handleCheckBox("1")}
+                />
+                <CheckboxLabel>Chưa biết</CheckboxLabel>
+              </View>
+              <View style={styles.checkBoxInner}>
+                <CheckBox
+                  tintColors={{
+                    true: themeContext.theme === "dark" ? "#41cebb" : "#0672cf",
+                  }}
+                  value={toggleCheckBox["2"]}
+                  onValueChange={() => handleCheckBox("2")}
+                />
+                <CheckboxLabel>Đã biết</CheckboxLabel>
+              </View>
             </View>
-            <View style={styles.checkBoxInner}>
-              <CheckBox
-                tintColors={{
-                  true: themeContext.theme === "dark" ? "#41cebb" : "#0672cf",
-                }}
-                value={toggleCheckBox["2"]}
-                onValueChange={() => handleCheckBox("2")}
-              />
-              <CheckboxLabel>Đã biết</CheckboxLabel>
-            </View>
-          </View>
+          )}
           <Line />
+
           <Text>{contentComponent}</Text>
         </View>
       )}
