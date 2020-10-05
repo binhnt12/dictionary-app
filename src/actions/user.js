@@ -6,7 +6,6 @@ import {
   LOGOUT_SUCCESS,
   LOGOUT_FAILURE,
   CLEAR_INFO_USER,
-  GET_TOKEN,
   LOADING,
 } from "../contants/actions";
 import callApi from "../utils/apiCaller";
@@ -76,11 +75,5 @@ export const logout = dispatch => {
 export const clearInfoUser = dispatch => {
   dispatch({
     type: CLEAR_INFO_USER,
-  });
-};
-
-export const getToken = dispatch => {
-  dispatch({
-    type: GET_TOKEN,
   });
 };

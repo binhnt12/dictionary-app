@@ -9,7 +9,6 @@ export const SIGN_UP_FAILURE = "SIGN_UP_FAILURE";
 export const LOGOUT_SUCCESS = "LOGOUT_SUCCESS";
 export const LOGOUT_FAILURE = "LOGOUT_FAILURE";
 export const CLEAR_INFO_USER = "CLEAR_INFO_USER";
-export const GET_TOKEN = "GET_TOKEN";
 
 export const GET_LIST_WORD = "GET_LIST_WORD";
 export const CLEAR_LIST_WORD = "CLEAR_LIST_WORD";

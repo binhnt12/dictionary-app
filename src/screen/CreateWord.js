@@ -186,7 +186,7 @@ const CreateWord = () => {
       data.idx = shortid.generate();
       data.message = "Success";
       data.notFound = false;
-      addToListWord(dispatch, "unknown", data, err => {
+      addToListWord(dispatch, "unknown", data, token, err => {
         if (err) {
           setMessage("e0");
         } else {

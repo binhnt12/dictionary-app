@@ -72,6 +72,7 @@ const Search = props => {
   );
 
   const refresh = useSelector(state => state.word.refresh);
+  const token = useSelector(state => state.user.token);
   const dispatch = useDispatch();
 
   const themeContext = useContext(ThemeContext);
@@ -91,9 +92,9 @@ const Search = props => {
       temp[i] = false;
       setToggleCheckBox(temp);
       if (i === "1") {
-        removeFromListWord(dispatch, "unknown", data.idx);
+        removeFromListWord(dispatch, "unknown", data.idx, token);
       } else {
-        removeFromListWord(dispatch, "known", data.idx);
+        removeFromListWord(dispatch, "known", data.idx, token);
       }
     } else {
       const k = temp[j];
@@ -101,11 +102,11 @@ const Search = props => {
       temp[j] = false;
       setToggleCheckBox(temp);
       if (i === "1") {
-        addToListWord(dispatch, "unknown", data);
-        k && removeFromListWord(dispatch, "known", data.idx);
+        addToListWord(dispatch, "unknown", data, token);
+        k && removeFromListWord(dispatch, "known", data.idx, token);
       } else {
-        addToListWord(dispatch, "known", data);
-        k && removeFromListWord(dispatch, "unknown", data.idx);
+        addToListWord(dispatch, "known", data, token);
+        k && removeFromListWord(dispatch, "unknown", data.idx, token);
       }
     }
   };

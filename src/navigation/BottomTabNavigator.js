@@ -2,11 +2,12 @@ import React from "react";
 import { StyleSheet, Text } from "react-native";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import { useSelector } from "react-redux";
+
 import Home from "../screen/Home";
 import Search from "../screen/Search";
 import CreateWord from "../screen/CreateWord";
 import Loading from "../components/Loading";
-import { useSelector } from "react-redux";
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -17,7 +18,7 @@ const BottomTabNavigator = () => {
 
     <Tab.Navigator
       key="tab-navigator"
-      initialRouteName="CreateWord"
+      initialRouteName="Home"
       tabBarPosition="bottom"
       tabBarOptions={{
         showIcon: true,

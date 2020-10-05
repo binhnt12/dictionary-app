@@ -1,7 +1,7 @@
 import React, { useRef, useState } from "react";
 import { View, Switch, Animated, StyleSheet, Dimensions } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react/cjs/react.development";
 import styled from "styled-components";
 
@@ -141,8 +141,8 @@ const SettingOptionText = styled.Text`
 const Sidebar = props => {
   const { username, handleUnknownProps, isShowModal } = props;
 
+  const isEnabled = useSelector(state => state.setting.darkMode);
   const [isUnknown, setUnknown] = useState(true);
-  const [isEnabled, setEnabled] = useState(false);
   const [translateX, setTranslateX] = useState(null);
   const isFirstRun = useRef(true);
   let translateValue = new Animated.Value(0);
@@ -164,7 +164,6 @@ const Sidebar = props => {
 
   const handleSwitch = () => {
     toggleTheme(dispatch, !isEnabled);
-    setEnabled(!isEnabled);
   };
 
   const handleUnknown = value => {

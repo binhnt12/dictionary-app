@@ -1,4 +1,3 @@
-import AsyncStorage from "@react-native-community/async-storage";
 import callApi from "../utils/apiCaller";
 import {
   GET_LIST_WORD,
@@ -11,27 +10,21 @@ import {
   LOADING,
 } from "../contants/actions";
 
-export const getListWord = async (dispatch, type) => {
+export const getListWord = (dispatch, token) => {
   dispatch({ type: LOADING });
-  let token;
-  try {
-    token = await AsyncStorage.getItem("token");
-    return callApi("GET", `api/protect/getListWord`, null, token)
-      .then(res => {
-        dispatch({
-          type: GET_LIST_WORD,
-          payload: res.data,
-        });
-      })
-      .catch(error => {
-        if (error.response) {
-          console.error(error.response.data);
-        }
-        throw error;
+  return callApi("GET", `api/protect/getListWord`, null, token)
+    .then(res => {
+      dispatch({
+        type: GET_LIST_WORD,
+        payload: res.data,
       });
-  } catch (e) {
-    console.log({ e });
-  }
+    })
+    .catch(error => {
+      if (error.response) {
+        console.error(error.response.data);
+      }
+      throw error;
+    });
 };
 
 export const clearListWord = dispatch => {
@@ -40,20 +33,15 @@ export const clearListWord = dispatch => {
   });
 };
 
-export const addToListWord = async (dispatch, type, data, cb) => {
+export const addToListWord = async (dispatch, type, data, token, cb) => {
+  dispatch({ type: LOADING });
+
   if (data.words && data.words.length > 0) {
     delete data.words;
   }
-  dispatch({ type: LOADING });
-  let token;
-  try {
-    token = await AsyncStorage.getItem("token");
-    return callApi(
-      "POST",
-      `api/protect/addWord/?type=${type}`,
-      data,
-      token,
-    ).then(res => {
+
+  return callApi("POST", `api/protect/addWord/?type=${type}`, data, token).then(
+    res => {
       if (res && res.status === 200) {
         dispatch({
           type: ADD_TO_LIST_WORD_SUCCESS,
@@ -70,43 +58,31 @@ export const addToListWord = async (dispatch, type, data, cb) => {
         });
         cb && cb(true);
       }
-    });
-  } catch (error) {
-    if (error.response) {
-      console.error(error.response.data);
-    }
-  }
+    },
+  );
 };
 
-export const removeFromListWord = async (dispatch, type, idx) => {
-  let token;
-  try {
-    dispatch({ type: LOADING });
-    token = await AsyncStorage.getItem("token");
-    return callApi(
-      "GET",
-      `api/protect/removeFromListWord/?type=${type}&idx=${idx}`,
-      null,
-      token,
-    ).then(res => {
-      if (res && res.status === 200) {
-        dispatch({
-          type: REMOVE_FROM_LIST_WORD_SUCCESS,
-          payload: { type, idx },
-        });
-        dispatch({
-          type: CLEAR_ERROR_WORD,
-        });
-      } else {
-        dispatch({
-          type: REMOVE_FROM_LIST_WORD_ERROR,
-          payload: "e0",
-        });
-      }
-    });
-  } catch (error) {
-    if (error.response) {
-      console.error(error.response.data);
+export const removeFromListWord = async (dispatch, type, idx, token) => {
+  dispatch({ type: LOADING });
+  return callApi(
+    "GET",
+    `api/protect/removeFromListWord/?type=${type}&idx=${idx}`,
+    null,
+    token,
+  ).then(res => {
+    if (res && res.status === 200) {
+      dispatch({
+        type: REMOVE_FROM_LIST_WORD_SUCCESS,
+        payload: { type, idx },
+      });
+      dispatch({
+        type: CLEAR_ERROR_WORD,
+      });
+    } else {
+      dispatch({
+        type: REMOVE_FROM_LIST_WORD_ERROR,
+        payload: "e0",
+      });
     }
-  }
+  });
 };

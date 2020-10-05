@@ -70,6 +70,7 @@ export const Carousel = props => {
         contentContainerStyle={{
           ...styles.scrollView,
           width: `${100 * intervals}%`,
+          flexDirection: "row-reverse",
         }}
         showsHorizontalScrollIndicator={false}
         onContentSizeChange={(w, h) => init(w)}

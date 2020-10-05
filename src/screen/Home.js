@@ -1,18 +1,11 @@
-import React, { useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import React from "react";
+import { useSelector } from "react-redux";
 
 import LoginAndRegisterScreen from "../navigation/LoginAndRegisterNavigator";
 import User from "../components/User";
 
-import { getToken } from "../actions/user";
-
 const Home = () => {
   const token = useSelector(state => state.user.token);
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    getToken(dispatch);
-  }, []);
 
   return token ? <User /> : <LoginAndRegisterScreen />;
 };

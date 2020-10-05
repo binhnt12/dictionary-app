@@ -46,12 +46,13 @@ const User = () => {
   const listWordUnknown = useSelector(state => state.word.listWord.unknown);
   const listWordKnown = useSelector(state => state.word.listWord.known);
   const errorWord = useSelector(state => state.word.error);
+  const token = useSelector(state => state.user.token);
   const dispatch = useDispatch();
 
   let listWord = isUnknown ? listWordUnknown : listWordKnown;
 
   useEffect(() => {
-    getListWord(dispatch);
+    getListWord(dispatch, token);
     return () => {
       clearListWord(dispatch);
     };
