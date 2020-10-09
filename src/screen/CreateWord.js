@@ -200,6 +200,7 @@ const CreateWord = () => {
     <Container>
       <Title>Tạo từ mới</Title>
       <Word
+        autoCapitalize="none"
         placeholder="Nhập từ"
         value={word}
         onChangeText={text => setWord(text)}

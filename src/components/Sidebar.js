@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react/cjs/react.development";
 import styled from "styled-components";
 
-import { toggleTheme } from "../actions/setting";
+import { toggleTheme, toggleHide } from "../actions/setting";
 import { COLORS } from "../contants/colors";
 
 const { height, width } = Dimensions.get("window");
@@ -141,7 +141,8 @@ const SettingOptionText = styled.Text`
 const Sidebar = props => {
   const { username, handleUnknownProps, isShowModal } = props;
 
-  const isEnabled = useSelector(state => state.setting.darkMode);
+  const isDarkMode = useSelector(state => state.setting.darkMode);
+  const isHide = useSelector(state => state.setting.hide);
   const [isUnknown, setUnknown] = useState(true);
   const [translateX, setTranslateX] = useState(null);
   const isFirstRun = useRef(true);
@@ -162,8 +163,12 @@ const Sidebar = props => {
     }).start();
   }, [isShowModal]);
 
-  const handleSwitch = () => {
-    toggleTheme(dispatch, !isEnabled);
+  const handleDarkMode = () => {
+    toggleTheme(dispatch, !isDarkMode);
+  };
+
+  const handleHide = () => {
+    toggleHide(dispatch, !isHide);
   };
 
   const handleUnknown = value => {
@@ -218,10 +223,20 @@ const Sidebar = props => {
             <SettingOptionText>Dark Mode</SettingOptionText>
             <Switch
               trackColor={{ false: "#767577", true: "#0672cf" }}
-              thumbColor={isEnabled ? "#fc9f0d" : "#f4f3f4"}
+              thumbColor={isDarkMode ? "#fc9f0d" : "#f4f3f4"}
               ios_backgroundColor="#3e3e3e"
-              onValueChange={() => handleSwitch()}
-              value={isEnabled}
+              onValueChange={() => handleDarkMode()}
+              value={isDarkMode}
+            />
+          </SettingOption>
+          <SettingOption>
+            <SettingOptionText>Che nghĩa của từ</SettingOptionText>
+            <Switch
+              trackColor={{ false: "#767577", true: "#0672cf" }}
+              thumbColor={isHide ? "#fc9f0d" : "#f4f3f4"}
+              ios_backgroundColor="#3e3e3e"
+              onValueChange={() => handleHide()}
+              value={isHide}
             />
           </SettingOption>
         </Setting>

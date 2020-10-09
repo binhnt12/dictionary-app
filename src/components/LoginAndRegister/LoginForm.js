@@ -39,6 +39,7 @@ const LoginForm = ({ navigation }) => {
         style={isFocusUsername ? styles.inputFocus : styles.input}
         onFocus={() => setFocusUsername(true)}
         onBlur={() => setFocusUsername(false)}
+        autoCapitalize="none"
       />
       <TextInput
         placeholder="Mật khẩu"
@@ -47,6 +48,7 @@ const LoginForm = ({ navigation }) => {
         style={isFocusPassword ? styles.inputFocus : styles.input}
         onFocus={() => setFocusPassword(true)}
         onBlur={() => setFocusPassword(false)}
+        secureTextEntry
       />
       <TouchableOpacity
         onPress={() => handleLogin({ username, password })}
@@ -73,6 +75,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#F5F5F2",
     alignItems: "center",
     height: 1000,
+    paddingHorizontal: 20,
   },
   login: {
     fontFamily: "Helvetica",
@@ -101,7 +104,7 @@ const styles = StyleSheet.create({
     marginTop: 14,
     paddingRight: 23,
     paddingLeft: 23,
-    width: "85%",
+    width: "100%",
     height: 46,
   },
   inputFocus: {
@@ -118,13 +121,13 @@ const styles = StyleSheet.create({
     marginTop: 14,
     paddingRight: 23,
     paddingLeft: 23,
-    width: "85%",
+    width: "100%",
     height: 46,
   },
   button: {
     backgroundColor: "#41CEBB",
     borderRadius: 90,
-    width: "85%",
+    width: "100%",
     height: 46,
     paddingRight: 23,
     paddingLeft: 23,
@@ -142,7 +145,7 @@ const styles = StyleSheet.create({
   },
   register: {
     marginTop: 23,
-    width: "85%",
+    width: "100%",
     flexDirection: "row",
     flexWrap: "wrap",
     justifyContent: "flex-end",

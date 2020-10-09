@@ -11,6 +11,7 @@ import {
 const defaultStates = {
   error: null,
   refresh: false,
+  refresh2: false,
   listWord: {
     unknown: [],
     known: [],
@@ -38,6 +39,7 @@ export default function word(state = defaultStates, action) {
         },
 
         refresh: !state.refresh,
+        refresh2: !state.refresh2,
       };
     case ADD_TO_LIST_WORD_ERROR:
       return { ...state, error: action.payload, refresh: !state.refresh };

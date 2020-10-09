@@ -1,12 +1,5 @@
-import React, { useState, useRef, useMemo, useEffect } from "react";
-import {
-  Text,
-  TextInput,
-  ScrollView,
-  StyleSheet,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import React, { useState, useRef, useMemo } from "react";
+import { ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useSelector, useDispatch } from "react-redux";
 import styled from "styled-components";
@@ -137,6 +130,7 @@ const Search = () => {
       <Title>Tìm kiếm từ vựng</Title>
       <SearchContainer isFocusInput={isFocusInput}>
         <SearchInput
+          autoCapitalize="none"
           onChangeText={value => onSearcch(value)}
           value={text}
           onFocus={() => onFocus()}

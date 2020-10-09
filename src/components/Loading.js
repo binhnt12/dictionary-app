@@ -3,7 +3,7 @@ import { Image, View, StyleSheet, Modal, Text } from "react-native";
 
 import ImgLoading from "../images/Spin-1s-200px.gif";
 
-function Loading(props) {
+function Loading() {
   return (
     <Modal transparent style={styles.modal}>
       <View style={styles.imgContainer}>
