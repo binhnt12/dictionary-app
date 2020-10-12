@@ -110,24 +110,31 @@ const User = ({ navigation }) => {
               />
             </TouchableOpacity>
           </View>
-          {listWord && listWord.length === 0 && (
+          {listWord && listWord.length === 0 ? (
             <Welcome>{`Welcome ${username}!`}</Welcome>
+          ) : (
+            (!!errorWord && (
+              <Message type="error">{MESSAGES[errorWord].text}</Message>
+            ),
+            (
+              <View
+                style={styles.slideShow}
+                onStartShouldSetResponder={() => !isShowModal}
+                onPress={() => setShowModal(false)}
+              >
+                {listWord &&
+                  (!isFirstRef.current ? (
+                    <Carousel
+                      key={refresh2}
+                      items={listWord}
+                      unknown={isUnknown}
+                    />
+                  ) : (
+                    <Carousel items={listWord} unknown={isUnknown} />
+                  ))}
+              </View>
+            ))
           )}
-          {!!errorWord && (
-            <Message type="error">{MESSAGES[errorWord].text}</Message>
-          )}
-          <View
-            style={styles.slideShow}
-            onStartShouldSetResponder={() => !isShowModal}
-            onPress={() => setShowModal(false)}
-          >
-            {listWord &&
-              (!isFirstRef.current ? (
-                <Carousel key={refresh2} items={listWord} unknown={isUnknown} />
-              ) : (
-                <Carousel items={listWord} unknown={isUnknown} />
-              ))}
-          </View>
         </Container>
       </TouchableWithoutFeedback>
 

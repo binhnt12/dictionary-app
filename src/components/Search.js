@@ -64,15 +64,28 @@ const Line = styled.View`
   background-color: #999;
 `;
 
+const Display = styled.TouchableOpacity`
+  margin-top: 10px;
+`;
+
+const DisplayText = styled.Text`
+  color: ${props =>
+    props.theme.theme === "dark" ? COLORS.lightBlue : COLORS.blue};
+  font-size: 15px;
+  text-align: center;
+`;
+
 const Search = props => {
   const { radioProps, data, selector, user } = props;
 
   const [toggleCheckBox, setToggleCheckBox] = useState(
     radioProps || { 1: false, 2: false },
   );
+  const [isHide, setHide] = useState(hide);
 
   const refresh = useSelector(state => state.word.refresh);
   const token = useSelector(state => state.user.token);
+  const hide = useSelector(state => state.setting.hide);
   const dispatch = useDispatch();
 
   const themeContext = useContext(ThemeContext);
@@ -80,6 +93,10 @@ const Search = props => {
   useEffect(() => {
     setToggleCheckBox(radioProps);
   }, [radioProps, refresh]);
+
+  useEffect(() => {
+    setHide(hide);
+  }, [hide]);
 
   if (!data) {
     return null;
@@ -205,8 +222,18 @@ const Search = props => {
             </View>
           )}
           <Line />
-
-          <Text>{contentComponent}</Text>
+          {isHide ? (
+            <Display onPress={() => setHide(false)}>
+              <DisplayText>&#9660; Hiện</DisplayText>
+            </Display>
+          ) : (
+            <View>
+              <Display onPress={() => setHide(true)}>
+                <DisplayText>&#9650; Ẩn</DisplayText>
+              </Display>
+              <Text>{contentComponent}</Text>
+            </View>
+          )}
         </View>
       )}
     </LazyloadView>
