@@ -6,6 +6,7 @@ import {
   REMOVE_FROM_LIST_WORD_SUCCESS,
   REMOVE_FROM_LIST_WORD_ERROR,
   CLEAR_ERROR_WORD,
+  REFRESH_WORD,
 } from "../contants/actions";
 
 const defaultStates = {
@@ -38,8 +39,8 @@ export default function word(state = defaultStates, action) {
           ],
         },
 
-        refresh: !state.refresh,
-        refresh2: !state.refresh2,
+        // refresh: !state.refresh,
+        // refresh2: !state.refresh2,
       };
     case ADD_TO_LIST_WORD_ERROR:
       return { ...state, error: action.payload, refresh: !state.refresh };
@@ -51,13 +52,16 @@ export default function word(state = defaultStates, action) {
       return {
         ...state,
         listWord: { ...state.listWord, [action.payload.type]: newListWord },
-        refresh: !state.refresh,
+        // refresh: !state.refresh,
       };
     case REMOVE_FROM_LIST_WORD_ERROR:
       return { ...state, error: action.payload, refresh: !state.refresh };
 
     case CLEAR_ERROR_WORD:
       return { ...state, error: null };
+
+    case REFRESH_WORD:
+      return { ...state, refresh2: !state.refresh2 };
 
     default:
       return state;

@@ -92,9 +92,9 @@ const Search = props => {
       temp[i] = false;
       setToggleCheckBox(temp);
       if (i === "1") {
-        removeFromListWord(dispatch, "unknown", data.idx, token);
+        removeFromListWord(dispatch, "unknown", data.idx, token, user);
       } else {
-        removeFromListWord(dispatch, "known", data.idx, token);
+        removeFromListWord(dispatch, "known", data.idx, token, user);
       }
     } else {
       const k = temp[j];
@@ -102,10 +102,12 @@ const Search = props => {
       temp[j] = false;
       setToggleCheckBox(temp);
       if (i === "1") {
-        addToListWord(dispatch, "unknown", data, token);
+        // !user && dispatch({ type: REFRESH_WORD });
+        addToListWord(dispatch, "unknown", data, token, null, user);
         k && removeFromListWord(dispatch, "known", data.idx, token);
       } else {
-        addToListWord(dispatch, "known", data, token);
+        // !user && dispatch({ type: REFRESH_WORD });
+        addToListWord(dispatch, "known", data, token, null, user);
         k && removeFromListWord(dispatch, "unknown", data.idx, token);
       }
     }
@@ -171,7 +173,7 @@ const Search = props => {
 
   return data ? (
     <LazyloadView
-      host={user ? "unique-lazyload-list-name" : null}
+      // host={user ? "unique-lazyload-list-name" : null}
       style={user ? styles.slideUser : styles.slide}
     >
       {data.notFound || !data.detail ? (

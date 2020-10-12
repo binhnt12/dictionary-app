@@ -8,6 +8,7 @@ import {
   REMOVE_FROM_LIST_WORD_ERROR,
   CLEAR_ERROR_WORD,
   LOADING,
+  REFRESH_WORD,
 } from "../contants/actions";
 
 export const getListWord = (dispatch, token) => {
@@ -33,7 +34,7 @@ export const clearListWord = dispatch => {
   });
 };
 
-export const addToListWord = async (dispatch, type, data, token, cb) => {
+export const addToListWord = async (dispatch, type, data, token, cb, user) => {
   dispatch({ type: LOADING });
 
   if (data.words && data.words.length > 0) {
@@ -51,6 +52,7 @@ export const addToListWord = async (dispatch, type, data, token, cb) => {
           type: CLEAR_ERROR_WORD,
         });
         cb && cb(false);
+        // !user && dispatch({ type: REFRESH_WORD });
       } else {
         dispatch({
           type: ADD_TO_LIST_WORD_ERROR,
@@ -62,8 +64,9 @@ export const addToListWord = async (dispatch, type, data, token, cb) => {
   );
 };
 
-export const removeFromListWord = async (dispatch, type, idx, token) => {
+export const removeFromListWord = async (dispatch, type, idx, token, user) => {
   dispatch({ type: LOADING });
+
   return callApi(
     "GET",
     `api/protect/removeFromListWord/?type=${type}&idx=${idx}`,
@@ -78,6 +81,7 @@ export const removeFromListWord = async (dispatch, type, idx, token) => {
       dispatch({
         type: CLEAR_ERROR_WORD,
       });
+      // !user && dispatch({ type: REFRESH_WORD });
     } else {
       dispatch({
         type: REMOVE_FROM_LIST_WORD_ERROR,

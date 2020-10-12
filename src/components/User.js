@@ -1,4 +1,11 @@
-import React, { memo, useCallback, useEffect, useState } from "react";
+import React, {
+  memo,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import {
   View,
   StyleSheet,
@@ -11,6 +18,7 @@ import styled from "styled-components";
 import { useSelector, useDispatch } from "react-redux";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { ScrollView } from "react-native-gesture-handler";
+import { useFocusEffect } from "@react-navigation/native";
 
 import Carousel from "./Carousel";
 import Sidebar from "./Sidebar";
@@ -20,6 +28,7 @@ import { getListWord, clearListWord } from "../actions/word";
 import { COLORS } from "../contants/colors";
 import Message from "./Message";
 import { MESSAGES } from "../contants/messages";
+import { REFRESH_WORD } from "../contants/actions";
 
 const { height } = Dimensions.get("window");
 
@@ -38,18 +47,29 @@ const Welcome = styled.Text`
 `;
 
 const User = () => {
-  const [key, setKey] = useState(0);
+  // const [key, setKey] = useState("0");
   const [isUnknown, setUnknown] = useState(true);
   const [isShowModal, setShowModal] = useState(false);
+  const [isFirst, setFirst] = useState(true);
+
+  const isFirstRef = useRef(isFirst);
 
   const username = useSelector(state => state.user.username);
   const listWordUnknown = useSelector(state => state.word.listWord.unknown);
   const listWordKnown = useSelector(state => state.word.listWord.known);
   const errorWord = useSelector(state => state.word.error);
   const token = useSelector(state => state.user.token);
+  const refresh2 = useSelector(state => state.word.refresh2);
   const dispatch = useDispatch();
 
   let listWord = isUnknown ? listWordUnknown : listWordKnown;
+
+  useEffect(() => {
+    isFirstRef.current = isFirst;
+    if (isFirst) {
+      setFirst(false);
+    }
+  }, [isFirst]);
 
   useEffect(() => {
     getListWord(dispatch, token);
@@ -57,10 +77,6 @@ const User = () => {
       clearListWord(dispatch);
     };
   }, []);
-
-  useEffect(() => {
-    setKey(key === 0 ? 1 : 0);
-  }, [listWord]);
 
   const handleLogout = () => {
     logout(dispatch);
@@ -91,7 +107,9 @@ const User = () => {
               />
             </TouchableOpacity>
           </View>
-          {listWord.length === 0 && <Welcome>{`Welcome ${username}!`}</Welcome>}
+          {listWord && listWord.length === 0 && (
+            <Welcome>{`Welcome ${username}!`}</Welcome>
+          )}
           {!!errorWord && (
             <Message type="error">{MESSAGES[errorWord].text}</Message>
           )}
@@ -100,9 +118,12 @@ const User = () => {
             onStartShouldSetResponder={() => !isShowModal}
             onPress={() => setShowModal(false)}
           >
-            {listWord && (
-              <Carousel key={key} items={listWord} unknown={isUnknown} />
-            )}
+            {listWord &&
+              (!isFirstRef.current ? (
+                <Carousel key={refresh2} items={listWord} unknown={isUnknown} />
+              ) : (
+                <Carousel items={listWord} unknown={isUnknown} />
+              ))}
           </View>
         </Container>
       </TouchableWithoutFeedback>

@@ -1,6 +1,7 @@
 import React, { memo, useMemo } from "react";
 import { View, Text, StyleSheet, Dimensions } from "react-native";
-import LazyloadScrollView from "./Lazyload/LazyloadScrollView";
+// import LazyloadScrollView from "./Lazyload/LazyloadScrollView";
+import {ScrollView} from 'react-native-gesture-handler'
 
 import Search from "./Search";
 
@@ -65,7 +66,7 @@ export const Carousel = props => {
 
   return (
     <View>
-      <LazyloadScrollView
+      <ScrollView
         horizontal={true}
         contentContainerStyle={{
           ...styles.scrollView,
@@ -81,10 +82,10 @@ export const Carousel = props => {
         scrollEventThrottle={200}
         pagingEnabled
         decelerationRate="fast"
-        name="unique-lazyload-list-name"
+        // name="unique-lazyload-list-name"
       >
         {content}
-      </LazyloadScrollView>
+      </ScrollView>
       <View style={styles.bullets}>{bullets}</View>
     </View>
   );

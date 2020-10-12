@@ -1,11 +1,11 @@
 import React from "react";
-import { Image, View, StyleSheet, Modal, Text } from "react-native";
+import { Image, View, StyleSheet, Modal } from "react-native";
 
 import ImgLoading from "../images/Spin-1s-200px.gif";
 
 function Loading() {
   return (
-    <Modal transparent style={styles.modal}>
+    <Modal transparent>
       <View style={styles.imgContainer}>
         <Image source={ImgLoading} style={styles.img} />
       </View>
@@ -14,7 +14,6 @@ function Loading() {
 }
 
 const styles = StyleSheet.create({
-  modal: {},
   imgContainer: {
     flex: 1,
     justifyContent: "center",
