@@ -4,6 +4,8 @@ import CheckBox from "@react-native-community/checkbox";
 import { useDispatch, useSelector } from "react-redux";
 import styled, { ThemeContext } from "styled-components";
 import LazyloadView from "./Lazyload/LazyloadView";
+import Sound from "react-native-sound";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
 import { addToListWord, removeFromListWord } from "../actions/word";
 import { COLORS } from "../contants/colors";
@@ -75,6 +77,17 @@ const DisplayText = styled.Text`
   text-align: center;
 `;
 
+const WordAndSound = styled.View`
+  flex-direction: row;
+  align-items: center;
+`;
+
+const SoundContainer = styled.TouchableOpacity`
+  margin-left: 8px;
+`;
+
+const SoundIcon = styled(Icon)``;
+
 const Search = props => {
   const { radioProps, data, selector, user } = props;
 
@@ -101,6 +114,22 @@ const Search = props => {
   if (!data) {
     return null;
   }
+
+  const onSound = () => {
+    const word = data.word.replace(/ /g, "+");
+    const whoosh = new Sound(
+      `http://translate.google.com/translate_tts?ie=UTF-8&total=1&idx=0&textlen=32&client=tw-ob&q=${word}&tl=En-gb`,
+      null,
+      error => {
+        if (error) {
+          console.log("failed to load the sound", error);
+          return;
+        }
+        whoosh.setVolume(0.8);
+        whoosh.play();
+      },
+    );
+  };
 
   const handleCheckBox = i => {
     const temp = { ...toggleCheckBox };
@@ -195,7 +224,12 @@ const Search = props => {
         <Message>{data.message}</Message>
       ) : (
         <View style={user ? styles.slideTextUser : styles.slideText}>
-          <Word>{data.word}</Word>
+          <WordAndSound>
+            <Word>{data.word}</Word>
+            <SoundContainer onPress={() => onSound()}>
+              <SoundIcon name="volume-high" size={25} />
+            </SoundContainer>
+          </WordAndSound>
           {splitTwo[0] !== "/" && <Spelling>{splitTwo[0]}</Spelling>}
           {selector && (
             <View style={styles.checkBoxContainer}>
