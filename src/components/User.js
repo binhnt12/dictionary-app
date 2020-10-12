@@ -1,11 +1,4 @@
-import React, {
-  memo,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { memo, useCallback, useEffect, useRef, useState } from "react";
 import {
   View,
   StyleSheet,
@@ -18,7 +11,6 @@ import styled from "styled-components";
 import { useSelector, useDispatch } from "react-redux";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { ScrollView } from "react-native-gesture-handler";
-import { useFocusEffect } from "@react-navigation/native";
 
 import Carousel from "./Carousel";
 import Sidebar from "./Sidebar";
@@ -46,8 +38,7 @@ const Welcome = styled.Text`
   color: ${COLORS.black};
 `;
 
-const User = () => {
-  // const [key, setKey] = useState("0");
+const User = ({ navigation }) => {
   const [isUnknown, setUnknown] = useState(true);
   const [isShowModal, setShowModal] = useState(false);
   const [isFirst, setFirst] = useState(true);
@@ -72,11 +63,23 @@ const User = () => {
   }, [isFirst]);
 
   useEffect(() => {
+    const unsubscribe = navigation.addListener("tabPress", () => {
+      dispatch({ type: REFRESH_WORD });
+    });
+
+    return unsubscribe;
+  }, []);
+
+  useEffect(() => {
     getListWord(dispatch, token);
     return () => {
       clearListWord(dispatch);
     };
   }, []);
+
+  useEffect(() => {
+    dispatch({ type: REFRESH_WORD });
+  }, [isUnknown]);
 
   const handleLogout = () => {
     logout(dispatch);

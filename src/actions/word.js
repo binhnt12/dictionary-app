@@ -52,7 +52,6 @@ export const addToListWord = async (dispatch, type, data, token, cb, user) => {
           type: CLEAR_ERROR_WORD,
         });
         cb && cb(false);
-        // !user && dispatch({ type: REFRESH_WORD });
       } else {
         dispatch({
           type: ADD_TO_LIST_WORD_ERROR,
@@ -81,7 +80,6 @@ export const removeFromListWord = async (dispatch, type, idx, token, user) => {
       dispatch({
         type: CLEAR_ERROR_WORD,
       });
-      // !user && dispatch({ type: REFRESH_WORD });
     } else {
       dispatch({
         type: REMOVE_FROM_LIST_WORD_ERROR,

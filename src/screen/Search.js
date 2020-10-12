@@ -1,9 +1,8 @@
-import React, { useState, useRef, useMemo, useCallback } from "react";
+import React, { useState, useRef, useMemo } from "react";
 import { ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useSelector, useDispatch } from "react-redux";
 import styled from "styled-components";
-import { useFocusEffect } from "@react-navigation/native";
 
 import SearchComponent from "../components/Search";
 import { getSingleWord, getMultipleWord } from "../actions/search";
@@ -11,7 +10,6 @@ import { COLORS } from "../contants/colors";
 import Message from "../components/Message";
 import { MESSAGES } from "../contants/messages";
 import { CLEAR_ERROR_WORD, CLEAR_ERROR_SEARCH } from "../contants/actions";
-import { REFRESH_WORD } from "../contants/actions";
 
 const Container = styled.ScrollView.attrs({
   contentContainerStyle: {
@@ -95,16 +93,6 @@ const Search = () => {
         listWordKnown.findIndex(e => e.idx === data.idx) !== -1,
     };
   }, [listWordUnknown, listWordKnown, showSearchComponent, data, refresh]);
-
-  useFocusEffect(
-    useCallback(() => {
-      dispatch({ type: REFRESH_WORD });
-
-      return () => {
-        // dispatch({ type: REFRESH_WORD });
-      };
-    }, [radioProps]),
-  );
 
   const onFocus = () => {
     setShowSearchComponent(false);

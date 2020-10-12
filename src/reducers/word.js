@@ -38,9 +38,6 @@ export default function word(state = defaultStates, action) {
             action.payload.data,
           ],
         },
-
-        // refresh: !state.refresh,
-        // refresh2: !state.refresh2,
       };
     case ADD_TO_LIST_WORD_ERROR:
       return { ...state, error: action.payload, refresh: !state.refresh };
@@ -52,7 +49,6 @@ export default function word(state = defaultStates, action) {
       return {
         ...state,
         listWord: { ...state.listWord, [action.payload.type]: newListWord },
-        // refresh: !state.refresh,
       };
     case REMOVE_FROM_LIST_WORD_ERROR:
       return { ...state, error: action.payload, refresh: !state.refresh };

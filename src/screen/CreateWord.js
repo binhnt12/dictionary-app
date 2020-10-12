@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect, useCallback } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled, { ThemeContext } from "styled-components";
 import shortid from "shortid";
@@ -7,8 +7,6 @@ import { addToListWord } from "../actions/word";
 import Message from "../components/Message";
 import { COLORS } from "../contants/colors";
 import { MESSAGES } from "../contants/messages";
-import { useFocusEffect } from "@react-navigation/native";
-import { REFRESH_WORD } from "../contants/actions";
 
 const Container = styled.ScrollView.attrs({
   contentContainerStyle: {
@@ -125,14 +123,6 @@ const CreateWord = () => {
   const dispatch = useDispatch();
 
   const themeContext = useContext(ThemeContext);
-
-  useFocusEffect(
-    useCallback(() => {
-      dispatch({ type: REFRESH_WORD });
-
-      return () => {};
-    }, [refresh]),
-  );
 
   useEffect(() => {
     setMessage("n0");

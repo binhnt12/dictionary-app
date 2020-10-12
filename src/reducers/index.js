@@ -27,7 +27,6 @@ const persistConfig = {
   blacklist: ["search", "word", "message", "loading"],
 };
 
-// export default rootReducer;
 const pReducer = persistReducer(persistConfig, rootReducer);
 export const store = createStore(pReducer, applyMiddleware(thunk));
 export const persistor = persistStore(store);
