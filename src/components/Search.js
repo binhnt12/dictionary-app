@@ -138,9 +138,9 @@ const Search = props => {
       temp[i] = false;
       setToggleCheckBox(temp);
       if (i === "1") {
-        removeFromListWord(dispatch, "unknown", data.idx, token, user);
+        removeFromListWord(dispatch, "unknown", data.idx, token);
       } else {
-        removeFromListWord(dispatch, "known", data.idx, token, user);
+        removeFromListWord(dispatch, "known", data.idx, token);
       }
     } else {
       const k = temp[j];
@@ -148,10 +148,10 @@ const Search = props => {
       temp[j] = false;
       setToggleCheckBox(temp);
       if (i === "1") {
-        addToListWord(dispatch, "unknown", data, token, null, user);
+        addToListWord(dispatch, "unknown", data, token);
         k && removeFromListWord(dispatch, "known", data.idx, token);
       } else {
-        addToListWord(dispatch, "known", data, token, null, user);
+        addToListWord(dispatch, "known", data, token);
         k && removeFromListWord(dispatch, "unknown", data.idx, token);
       }
     }
@@ -256,17 +256,21 @@ const Search = props => {
             </View>
           )}
           <Line />
-          {isHide ? (
-            <Display onPress={() => setHide(false)}>
-              <DisplayText>&#9660; Hiện</DisplayText>
-            </Display>
-          ) : (
-            <View>
-              <Display onPress={() => setHide(true)}>
-                <DisplayText>&#9650; Ẩn</DisplayText>
+          {user ? (
+            isHide ? (
+              <Display onPress={() => setHide(false)}>
+                <DisplayText>&#9660; Hiện</DisplayText>
               </Display>
-              <Text>{contentComponent}</Text>
-            </View>
+            ) : (
+              <View>
+                <Display onPress={() => setHide(true)}>
+                  <DisplayText>&#9650; Ẩn</DisplayText>
+                </Display>
+                <Text>{contentComponent}</Text>
+              </View>
+            )
+          ) : (
+            <Text>{contentComponent}</Text>
           )}
         </View>
       )}

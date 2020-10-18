@@ -1,5 +1,6 @@
 import {
   LOADING,
+  LOADING_2,
   LOGIN_SUCCESS,
   LOGIN_FAILURE,
   SIGN_UP_SUCCESS,
@@ -17,12 +18,15 @@ import {
 
 const defaultStates = {
   loading: false,
+  loading2: false,
 };
 
 export default function loading(state = defaultStates, action) {
   switch (action.type) {
     case LOADING:
       return { ...state, loading: true };
+    case LOADING_2:
+      return { ...state, loading2: true };
 
     case SIGN_UP_SUCCESS:
     case SIGN_UP_FAILURE:
@@ -37,7 +41,7 @@ export default function loading(state = defaultStates, action) {
     case REMOVE_FROM_LIST_WORD_ERROR:
     case GET_SINGLE_WORD_SUCCESS:
     case GET_SINGLE_WORD_ERROR:
-      return { ...state, loading: false };
+      return { ...state, loading: false, loading2: false };
 
     default:
       return state;

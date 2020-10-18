@@ -1,13 +1,12 @@
 import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-// import { createStore, applyMiddleware } from "redux";
 import { Provider } from "react-redux";
-// import thunk from "redux-thunk";
-// import rootReducer from "./src/reducers";
 import { PersistGate } from "redux-persist/lib/integration/react";
 import { store, persistor } from "./src/reducers";
+// import Background from "./src/components/Background";
 import Loading from "./src/components/Loading";
+import ImgLoading from "./src/images/Spin-1s-200px.gif";
 
 import BottomTabNavigator from "./src/navigation/BottomTabNavigator";
 import DarkThemeProvider from "./src/utils/DarkThemeProvider";
@@ -15,11 +14,19 @@ import DarkThemeProvider from "./src/utils/DarkThemeProvider";
 export default function App() {
   const Stack = createStackNavigator();
 
-  // const store = createStore(rootReducer, applyMiddleware(thunk));
-
   return (
     <Provider store={store}>
-      <PersistGate loading={<Loading />} persistor={persistor}>
+      <PersistGate
+        loading={
+          <Loading
+            image={ImgLoading}
+            backgroundColor="rgba(0,0,0,0.5)"
+            width={100}
+            height={100}
+          />
+        }
+        persistor={persistor}
+      >
         <DarkThemeProvider>
           <NavigationContainer>
             <Stack.Navigator>

@@ -8,13 +8,26 @@ import Home from "../screen/Home";
 import Search from "../screen/Search";
 import CreateWord from "../screen/CreateWord";
 import Loading from "../components/Loading";
+import ImgLoading from "../images/Spin-1s-200px.gif";
+import Background from "../components/Background";
 
 const Tab = createMaterialTopTabNavigator();
 
 const BottomTabNavigator = () => {
   const loading = useSelector(state => state.loading.loading);
+  const loading2 = useSelector(state => state.loading.loading2);
   return [
-    loading && <Loading key="loading" />,
+    loading && (
+      <Loading
+        key="loading"
+        image={ImgLoading}
+        backgroundColor="rgba(0,0,0,0.5)"
+        width={100}
+        height={100}
+      />
+    ),
+
+    loading2 && <Background key="loading-2" />,
 
     <Tab.Navigator
       key="tab-navigator"

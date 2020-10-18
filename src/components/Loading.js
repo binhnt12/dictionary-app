@@ -1,13 +1,11 @@
 import React from "react";
 import { Image, View, StyleSheet, Modal } from "react-native";
 
-import ImgLoading from "../images/Spin-1s-200px.gif";
-
-function Loading() {
+function Loading({ image, backgroundColor, width, height }) {
   return (
     <Modal transparent>
-      <View style={styles.imgContainer}>
-        <Image source={ImgLoading} style={styles.img} />
+      <View style={[styles.imgContainer, { backgroundColor }]}>
+        <Image source={image} style={{ width, height }} />
       </View>
     </Modal>
   );
@@ -18,12 +16,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#000",
-    opacity: 0.5,
-  },
-  img: {
-    width: 100,
-    height: 100,
   },
 });
 

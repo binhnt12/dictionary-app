@@ -1,4 +1,11 @@
-import React, { memo, useCallback, useEffect, useRef, useState } from "react";
+import React, {
+  memo,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import {
   View,
   StyleSheet,
@@ -92,6 +99,11 @@ const User = ({ navigation }) => {
     [handleUnknown],
   );
 
+  let carousel = useMemo(
+    () => <Carousel key={refresh2} items={listWord} unknown={isUnknown} />,
+    [refresh2, isUnknown, isFirstRef.current],
+  );
+
   return (
     <ScrollView>
       <TouchableWithoutFeedback onPress={() => setShowModal(false)}>
@@ -124,11 +136,7 @@ const User = ({ navigation }) => {
               >
                 {listWord &&
                   (!isFirstRef.current ? (
-                    <Carousel
-                      key={refresh2}
-                      items={listWord}
-                      unknown={isUnknown}
-                    />
+                    carousel
                   ) : (
                     <Carousel items={listWord} unknown={isUnknown} />
                   ))}

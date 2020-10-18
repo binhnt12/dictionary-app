@@ -9,10 +9,12 @@ import {
   CLEAR_ERROR_WORD,
   LOADING,
   REFRESH_WORD,
+  LOADING_2,
 } from "../contants/actions";
 
 export const getListWord = (dispatch, token) => {
   dispatch({ type: LOADING });
+  dispatch({ type: LOADING_2 });
   return callApi("GET", `api/protect/getListWord`, null, token)
     .then(res => {
       dispatch({
@@ -34,7 +36,7 @@ export const clearListWord = dispatch => {
   });
 };
 
-export const addToListWord = async (dispatch, type, data, token, cb, user) => {
+export const addToListWord = async (dispatch, type, data, token, cb) => {
   dispatch({ type: LOADING });
 
   if (data.words && data.words.length > 0) {
@@ -63,7 +65,7 @@ export const addToListWord = async (dispatch, type, data, token, cb, user) => {
   );
 };
 
-export const removeFromListWord = async (dispatch, type, idx, token, user) => {
+export const removeFromListWord = async (dispatch, type, idx, token) => {
   dispatch({ type: LOADING });
 
   return callApi(
