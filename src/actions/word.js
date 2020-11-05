@@ -13,7 +13,7 @@ import {
 } from "../contants/actions";
 
 export const getListWord = (dispatch, token) => {
-  dispatch({ type: LOADING });
+  // dispatch({ type: LOADING });
   dispatch({ type: LOADING_2 });
   return callApi("GET", `api/protect/getListWord`, null, token)
     .then(res => {
