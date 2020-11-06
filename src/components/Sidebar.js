@@ -1,8 +1,7 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { View, Switch, Animated, StyleSheet, Dimensions } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect } from "react/cjs/react.development";
 import styled from "styled-components";
 
 import { toggleTheme, toggleHide } from "../actions/setting";
